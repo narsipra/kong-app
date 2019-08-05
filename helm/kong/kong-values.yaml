@@ -1,9 +1,0 @@
-admin:
-  ingress:
-    enabled: true
-    hosts:
-    - kong.qbd97.k8s.gorilla.eu-central-1.aws.gigantic.io
-proxy:
-  type: ClusterIP
-
-postgresqlPassword: kong
