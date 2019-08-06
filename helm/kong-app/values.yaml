@@ -258,7 +258,7 @@ runMigrations: true
 env:
   # Giant Swarm: Disable database by default to avoid needing to manage
   # Postgres. State is stored in Ingress resources.
-  database: off
+  database: "off"
   proxy_access_log: /dev/stdout
   admin_access_log: /dev/stdout
   admin_gui_access_log: /dev/stdout
