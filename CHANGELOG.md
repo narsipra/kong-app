@@ -10,6 +10,7 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 ### Updated
 
 - Use retagged images.
+- Use ClusterIP for all services except proxy which uses LoadBalancer.
 
 ## [v0.1.0]
 

@@ -31,7 +31,7 @@ admin:
   servicePort: 8444
   containerPort: 8444
   # Kong admin service type
-  type: NodePort
+  type: ClusterIP
   # Set a nodePort which is available
   # nodePort: 32444
   # Kong admin ingress settings.
@@ -108,7 +108,7 @@ manager:
     # Set a nodePort which is available if service type is NodePort
     # nodePort: 32443
 
-  type: NodePort
+  type: ClusterIP
 
   # Kong proxy ingress settings.
   ingress:
@@ -146,7 +146,7 @@ portal:
     # Set a nodePort which is available if service type is NodePort
     # nodePort: 32443
 
-  type: NodePort
+  type: ClusterIP
 
   # Kong proxy ingress settings.
   ingress:
@@ -184,7 +184,7 @@ portalapi:
     # Set a nodePort which is available if service type is NodePort
     # nodePort: 32443
 
-  type: NodePort
+  type: ClusterIP
 
   # Kong proxy ingress settings.
   ingress:
