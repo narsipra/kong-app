@@ -32,7 +32,7 @@ spec:
       {{- if .Values.postgresql.enabled }}
       initContainers:
       - name: wait-for-postgres
-        image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
+        image: "{{ .Values.image.registry }}/{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
         env:
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}
@@ -47,7 +47,7 @@ spec:
       {{- end }}
       containers:
       - name: {{ template "kong.name" . }}-upgrade-migrations
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: KONG_NGINX_DAEMON

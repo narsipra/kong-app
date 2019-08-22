@@ -133,7 +133,7 @@ Create the ingress servicePort value string
 
 {{- define "kong.wait-for-db" -}}
 - name: wait-for-db
-  image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+  image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
   imagePullPolicy: {{ .Values.image.pullPolicy }}
   env:
   {{- if .Values.enterprise.enabled }}
@@ -185,7 +185,7 @@ Create the ingress servicePort value string
       fieldRef:
         apiVersion: v1
         fieldPath: metadata.namespace
-  image: "{{ .Values.ingressController.image.repository }}:{{ .Values.ingressController.image.tag }}"
+  image: "{{ .Values.image.registry }}/{{ .Values.ingressController.image.repository }}:{{ .Values.ingressController.image.tag }}"
   imagePullPolicy: {{ .Values.image.pullPolicy }}
   livenessProbe:
     failureThreshold: 3

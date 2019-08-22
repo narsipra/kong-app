@@ -44,7 +44,7 @@ spec:
       {{- include "kong.controller-container" . | nindent 6 }}
       {{ end }}
       - name: {{ template "kong.name" . }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         {{- if not .Values.env.admin_listen }}

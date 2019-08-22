@@ -8,4 +8,4 @@ name: kong-app
 sources:
 - https://github.com/Kong/kong
 version: [[ .Version ]]
-appVersion: 1.2
+appVersion: 1.2.2

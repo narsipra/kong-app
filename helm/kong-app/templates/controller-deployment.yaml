@@ -38,7 +38,7 @@ spec:
       {{- include "kong.wait-for-db" . | nindent 6 }}
       containers:
       - name: admin-api
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: KONG_PROXY_LISTEN
