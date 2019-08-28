@@ -149,6 +149,16 @@ Create the ingress servicePort value string
       secretKeyRef:
         name: {{ template "kong.postgresql.fullname" . }}
         key: postgresql-password
+  {{- else if .Values.postgresql.external.enabled }}
+  - name: KONG_PG_HOST
+    value: {{ .Values.postgresql.external.host }}
+  - name: KONG_PG_PORT
+    value: "{{ .Values.postgresql.external.port }}"
+  - name: KONG_PG_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: {{ template "kong.postgresql.fullname" . }}
+        key: postgresql-password
   {{- end }}
   {{- if .Values.cassandra.enabled }}
   - name: KONG_CASSANDRA_CONTACT_POINTS
@@ -219,4 +229,15 @@ Retrieve Kong Enterprise license from a secret and make it available in env vars
     secretKeyRef:
       name: {{ .Values.enterprise.license_secret }}
       key: license
+{{- end -}}
+
+{{/*
+Return PostgreSQL password
+*/}}
+{{- define "postgresql.password" -}}
+{{- if .Values.postgresql.external.enabled }}
+    {{- .Values.postgresql.external.password -}}
+{{- else -}}
+    {{- randAlphaNum 10 -}}
+{{- end -}}
 {{- end -}}

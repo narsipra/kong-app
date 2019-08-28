@@ -135,6 +135,8 @@ Enabling both will create both databases in your cluster, but only one
 will be used by Kong based on the `env.database` parameter.
 Postgres is enabled by default.
 
+In case you want to use a external Postgres database you can enable via `postgres.external.enabled` parameter. You will need to pass the `postgres.external.host` and `postgres.external.password`.
+
 | Parameter                         | Description                                                            | Default               |
 | ------------------------------    | --------------------------------------------------------------------   | -------------------   |
 | cassandra.enabled                 | Spin up a new cassandra cluster for Kong                               | `false`               |
@@ -151,7 +153,9 @@ Postgres is enabled by default.
 | env.cassandra_port                | Cassandra query port                                                   | `9042`                |
 | env.cassandra_keyspace            | Cassandra keyspace                                                     | `kong`                |
 | env.cassandra_repl_factor         | Replication factor for the Kong keyspace                               | `2`                   |
-
+| postgresql.external.enabled                | Set up an external postgres DB for Kong                               | `false` 
+| postgresql.external.password                | Define the password of the external Postgres DB                               | ``
+| postgresql.external.host                | Define the host of the external Postgres DB                   | ``               |
 
 All `kong.env` parameters can also accept a mapping instead of a value to ensure the parameters can be set through configmaps and secrets.
 
@@ -339,6 +343,9 @@ helm install stable/kong --set ingressController.enabled=true \
   --set postgresql.enabled=false --set env.database=off
 # with a database
 helm install stable/kong --set ingressController.enabled=true
+# with an external database
+helm install stable/kong --set ingressController.enabled=true \
+  --set postgresql.external.enabled=true --set env.database=postgres
 ```
 
 If you like to use a static IP:

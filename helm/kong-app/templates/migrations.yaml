@@ -24,15 +24,22 @@ spec:
         - name: {{ . }}
       {{- end }}
       {{- end }}
-      {{- if .Values.postgresql.enabled }}
+      {{- if or (.Values.postgresql.enabled) (.Values.postgresql.external.enabled) }}
       initContainers:
       - name: wait-for-postgres
         image: "{{ .Values.image.registry }}/{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
         env:
+        {{- if .Values.postgresql.external.enabled }}
+        - name: KONG_PG_HOST
+          value: {{ .Values.postgresql.external.host }}
+        - name: KONG_PG_PORT
+          value: "{{ .Values.postgresql.external.port }}"
+        {{- else }}
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}
         - name: KONG_PG_PORT
           value: "{{ .Values.postgresql.service.port }}"
+        {{- end }}
         - name: KONG_PG_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -56,6 +63,16 @@ spec:
           value: {{ template "kong.postgresql.fullname" . }}
         - name: KONG_PG_PORT
           value: "{{ .Values.postgresql.service.port }}"
+        - name: KONG_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "kong.postgresql.fullname" . }}
+              key: postgresql-password
+        {{- else if .Values.postgresql.external.enabled }}
+        - name: KONG_PG_HOST
+          value: {{ .Values.postgresql.external.host }}
+        - name: KONG_PG_PORT
+          value: "{{ .Values.postgresql.external.port }}"
         - name: KONG_PG_PASSWORD
           valueFrom:
             secretKeyRef:
