@@ -1,0 +1,14 @@
+{{ range (.Values.plugins) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kong-plugins-{{ .name }}
+  labels:
+    component: app
+data:
+{{ range (.files) }}
+  {{ .filename }}: |
+{{ .filecontent | indent 4 }}
+{{ end }}
+---
+{{ end }}

@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "{{ template "kong.fullname" . }}"
@@ -45,6 +45,10 @@ spec:
         image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
+        - name: KONG_PLUGINS
+          value: bundled{{ range (.Values.plugins) }}, {{ .name }} {{ end }}
+        - name: KONG_LUA_PACKAGE_PATH
+          value: "/kong-plugins/?.lua;;"
         {{- if not .Values.env.admin_listen }}
         {{- if .Values.admin.useTLS }}
         - name: KONG_ADMIN_LISTEN
@@ -240,6 +244,10 @@ spec:
         volumeMounts:
           - name: custom-nginx-template-volume
             mountPath: /kong
+        {{ range (.Values.plugins) }}
+          - name: kong-plugins-{{ .name }}
+            mountPath: /kong/plugins/{{ .name }}
+        {{ end }}
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
         livenessProbe:
@@ -257,6 +265,11 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       volumes:
+        {{ range (.Values.plugins) }}
+        - name: kong-plugins-{{ .name }}
+          configMap:
+            name: kong-plugins-{{ .name }}
+        {{ end }}
         - name: custom-nginx-template-volume
           configMap:
             name: {{ .Release.Name }}-kong-default-custom-server-blocks
