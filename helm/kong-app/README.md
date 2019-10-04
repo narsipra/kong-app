@@ -156,6 +156,7 @@ In case you want to use a external Postgres database you can enable via `postgre
 | postgresql.external.enabled                | Set up an external postgres DB for Kong                               | `false` 
 | postgresql.external.password                | Define the password of the external Postgres DB                               | ``
 | postgresql.external.host                | Define the host of the external Postgres DB                   | ``               |
+| redis.enabled                | Spin up a new redis instance for Kong                 | false               |
 | plugins              | Define custome plugins                  | ``               |
 
 All `kong.env` parameters can also accept a mapping instead of a value to ensure the parameters can be set through configmaps and secrets.

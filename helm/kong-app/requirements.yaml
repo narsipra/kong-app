@@ -7,3 +7,7 @@ dependencies:
   version: ~0.10.5
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
   condition: cassandra.enabled
+- name: redis
+  version: ~9.2.2
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: redis.enabled
