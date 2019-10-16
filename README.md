@@ -1,9 +1,9 @@
-[![CircleCI](https://circleci.com/gh/giantswarm/kong-app.svg?style=shield)](https://circleci.com/gh/giantswarm/kong-app)
+[![CircleCI](https://circleci.com/gh/giantswarm/aqua-app.svg?style=shield)](https://circleci.com/gh/giantswarm/aqua-app)
 
-# kong-app chart
+# aqua-app chart
 
-Giant Swarm offers a Kong Managed App which can be installed in tenant clusters.
-Here we define the Kong chart with its templates and default configuration.
+Giant Swarm offers a Aqua Managed App which can be installed in tenant clusters.
+Here we define the Aqua chart with its templates and default configuration.
 
 ## Credit
 
