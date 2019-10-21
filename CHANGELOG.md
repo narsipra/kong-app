@@ -9,6 +9,7 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ### Updated
 
+- Add new version of Kong and Kong ingress controller.
 - Add option to deploy redis for rate limiting plugin.
 - Add support to configure custom plugins.
 
