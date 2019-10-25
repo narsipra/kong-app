@@ -426,6 +426,9 @@ ingressController:
 
   installCRDs: true
 
+  validationController:
+    enabled: true
+
   rbac:
     # Specifies whether RBAC resources should be created
     create: true

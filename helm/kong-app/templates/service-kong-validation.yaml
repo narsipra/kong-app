@@ -1,0 +1,22 @@
+{{- if .Values.ingressController.validationController.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kong.fullname" . }}-validation
+  labels:
+    app: {{ template "kong.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: ClusterIP
+  ports:
+  - name: webhook
+    port: 443
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: {{ template "kong.name" . }}
+    release: {{ .Release.Name }}
+    component: app
+{{- end }}

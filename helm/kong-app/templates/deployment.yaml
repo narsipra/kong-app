@@ -280,4 +280,9 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       volumes:
-      {{- include "kong.volumes" . | nindent 8 -}}
+      {{- if .Values.ingressController.validationController.enabled }}
+      - name: validation-webhook
+        secret:
+          secretName: {{ template "kong.fullname" . }}-validation
+      {{- end }}
+      {{- include "kong.volumes" . | nindent 6 -}}

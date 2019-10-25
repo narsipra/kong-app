@@ -270,6 +270,16 @@ Create the ingress servicePort value string
         fieldPath: metadata.namespace
   image: "{{ .Values.image.registry }}/{{ .Values.ingressController.image.repository }}:{{ .Values.ingressController.image.tag }}"
   imagePullPolicy: {{ .Values.image.pullPolicy }}
+  {{- if .Values.ingressController.validationController.enabled }}
+  ports:
+  - name: webhook
+    containerPort: 8080
+    protocol: TCP
+  volumeMounts:
+  - name: validation-webhook
+    mountPath: /admission-webhook
+    readOnly: true
+  {{- end }}
   readinessProbe:
 {{ toYaml .Values.ingressController.readinessProbe | indent 4 }}
   livenessProbe:
