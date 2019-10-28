@@ -285,13 +285,13 @@ env:
 
 # If you want to specify resources, uncomment the following
 # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-resources: {}
-  # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
+resources: 
+  limits:
+   cpu: 100m
+   memory: 512Mi
+  requests:
+   cpu: 100m
+   memory: 512Mi
 
 # readinessProbe for Kong pods
 # If using Kong Enterprise with RBAC, you must add a Kong-Admin-Token header
@@ -335,7 +335,7 @@ nodeSelector: {}
 podAnnotations: {}
 
 # Kong pod count
-replicaCount: 1
+replicaCount: 2
 
 # Kong Pod Disruption Budget
 podDisruptionBudget:
@@ -422,7 +422,13 @@ ingressController:
     periodSeconds: 10
     successThreshold: 1
     timeoutSeconds: 5
-  resources: {}
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
 
   installCRDs: true
 
@@ -479,3 +485,22 @@ serviceMonitor:
   # namespace: monitoring
   # labels:
   #   foo: bar
+
+# Enable autoscaling using HorizontalPodAutoscaler
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 70

@@ -107,6 +107,11 @@ and their default values.
 | podAnnotations                 | Annotations to add to each pod                                                   | `{}`                |
 | resources                      | Pod resource requests & limits                                                   | `{}`                |
 | tolerations                    | List of node taints to tolerate                                                  | `[]`                |
+| validationController.enabled           | Enabled the validation webhook for KongPlugin and KongCredential resources                   | `true`                |
+| autoscaling.enabled | Set this to `true` to enable autoscaling | `false`
+| autoscaling.minReplicas | Set minimum number of replicas | `2`
+| autoscaling.maxReplicas | Set maximum number of replicas | `5`
+| autoscaling.metrics | metrics used for autoscaling | See [values.yaml](values.yaml)
 
 ### Admin/Proxy listener override
 
