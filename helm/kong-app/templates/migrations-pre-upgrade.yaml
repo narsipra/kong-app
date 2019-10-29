@@ -32,7 +32,7 @@ spec:
       {{- if or (.Values.postgresql.enabled) (.Values.postgresql.external.enabled) }}
       initContainers:
       - name: wait-for-postgres
-        image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
+        image: "{{ .Values.image.registry }}/{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
         env:
         {{- if .Values.postgresql.enabled }}
         - name: KONG_PG_HOST
