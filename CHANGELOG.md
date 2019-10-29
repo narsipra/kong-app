@@ -10,6 +10,7 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 ## Changed
 
 - Add registry in all wait images entries to make it deployable in all regions
+- Use a fixed busybox version for wait images to make it deterministic
 
 ## [v0.4.0] 
 
