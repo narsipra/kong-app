@@ -59,7 +59,7 @@ spec:
       {{- end }}
       containers:
       - name: {{ template "kong.name" . }}-upgrade-migrations
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: KONG_LUA_PACKAGE_PATH

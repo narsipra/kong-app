@@ -16,7 +16,7 @@ image:
   #   - myRegistrKeySecretName
 
 waitImage:
-  repository: busybox
+  repository: giantswarm/busybox
   tag: 1.31.0
 
 # Specify Kong admin and proxy services configurations
