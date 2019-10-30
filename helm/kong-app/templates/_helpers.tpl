@@ -211,6 +211,10 @@ Create the ingress servicePort value string
     value: {{ template "kong.postgresql.fullname" . }}
   - name: KONG_PG_PORT
     value: "{{ .Values.postgresql.service.port }}"
+  - name: KONG_PG_USER
+    value: "{{ .Values.postgresql.postgresqlUsername }}"
+  - name: KONG_PG_DATABASE
+    value: "{{ .Values.postgresql.postgresqlDatabase }}"
   - name: KONG_PG_PASSWORD
     valueFrom:
       secretKeyRef:
@@ -221,6 +225,10 @@ Create the ingress servicePort value string
   {{- else if .Values.postgresql.external.enabled }}
   - name: KONG_PG_HOST
     value: {{ .Values.postgresql.external.host }}
+  - name: KONG_PG_USER
+    value: "{{ .Values.postgresql.postgresqlUsername }}"
+  - name: KONG_PG_DATABASE
+    value: "{{ .Values.postgresql.postgresqlDatabase }}"
   - name: KONG_PG_PORT
     value: "{{ .Values.postgresql.external.port }}"
   - name: KONG_LUA_PACKAGE_PATH

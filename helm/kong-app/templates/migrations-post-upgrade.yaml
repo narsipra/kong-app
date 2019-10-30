@@ -37,6 +37,10 @@ spec:
         {{- if .Values.postgresql.enabled }}
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}
+        - name: KONG_PG_USER
+          value: "{{ .Values.postgresql.postgresqlUsername }}"
+        - name: KONG_PG_DATABASE
+          value: "{{ .Values.postgresql.postgresqlDatabase }}"
         - name: KONG_PG_PORT
           value: "{{ .Values.postgresql.service.port }}"
         - name: KONG_PG_PASSWORD
@@ -47,6 +51,10 @@ spec:
         {{- else if .Values.postgresql.external.enabled }}
         - name: KONG_PG_HOST
           value: {{ .Values.postgresql.external.host }}
+        - name: KONG_PG_USER
+          value: "{{ .Values.postgresql.postgresqlUsername }}"
+        - name: KONG_PG_DATABASE
+          value: "{{ .Values.postgresql.postgresqlDatabase }}"
         - name: KONG_PG_PORT
           value: "{{ .Values.postgresql.external.port }}"
         - name: KONG_PG_PASSWORD
@@ -74,6 +82,10 @@ spec:
         {{- if .Values.postgresql.enabled }}
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}
+        - name: KONG_PG_USER
+          value: "{{ .Values.postgresql.postgresqlUsername }}"
+        - name: KONG_PG_DATABASE
+          value: "{{ .Values.postgresql.postgresqlDatabase }}"
         - name: KONG_PG_PORT
           value: "{{ .Values.postgresql.service.port }}"
         - name: KONG_PG_PASSWORD
@@ -84,6 +96,10 @@ spec:
         {{- else if .Values.postgresql.external.enabled }}
         - name: KONG_PG_HOST
           value: {{ .Values.postgresql.external.host }}
+        - name: KONG_PG_USER
+          value: "{{ .Values.postgresql.postgresqlUsername }}"
+        - name: KONG_PG_DATABASE
+          value: "{{ .Values.postgresql.postgresqlDatabase }}"
         - name: KONG_PG_PORT
           value: "{{ .Values.postgresql.external.port }}"
         - name: KONG_PG_PASSWORD
