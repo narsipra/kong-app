@@ -138,7 +138,7 @@ Create the ingress servicePort value string
 
 {{- define "kong.volumes" -}}
 {{- range .Values.plugins.configMaps }}
-- name: kong-plugin-{{ .pluginName }}
+- name: kong-plugin-{{ empty .path | ternary .pluginName .name }}
   configMap:
     name: {{ .name }}
 {{- end }}
@@ -178,12 +178,12 @@ Create the ingress servicePort value string
   mountPath: /etc/secrets/{{ . }}
 {{- end }}
 {{- range .Values.plugins.configMaps }}
-- name:  kong-plugin-{{ .pluginName }}
-  mountPath: /opt/kong/plugins/{{ .pluginName }}
+- name:  kong-plugin-{{ empty .path | ternary .pluginName .name }}
+  mountPath: /opt/kong/plugins/{{ coalesce .path .pluginName }}
 {{- end }}
 {{- range .Values.plugins.secrets }}
-- name:  kong-plugin-{{ .pluginName }}
-  mountPath: /opt/kong/plugins/{{ .pluginName }}
+- name:  kong-plugin-{{ empty .path | ternary .pluginName .name }}
+  mountPath: /opt/kong/plugins/{{ coalesce .path .pluginName }}
 {{- end }}
 {{- end -}}
 
@@ -195,7 +195,7 @@ Create the ingress servicePort value string
 {{- range .Values.plugins.secrets -}}
   {{ $myList = append $myList .pluginName -}}
 {{- end }}
-{{- $myList | join "," -}}
+{{- $myList | uniq | join "," -}}
 {{- end -}}
 
 {{- define "kong.wait-for-db" -}}
