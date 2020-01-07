@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project's packages adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.4.6]
+
+## Added
+
+- Bump versions (#31), Fix giantswarm/kong-app/issues/29
+
 ## [v0.4.5]
 
 ## Added
@@ -36,14 +42,14 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Add registry in all wait images entries to make it deployable in all regions
 - Use a fixed busybox version for wait images to make it deterministic
 
-## [v0.4.0] 
+## [v0.4.0]
 
 ### Added
 
 - Add support for validation controller as optional.
 - Add option to configure a horizontal pod autoscaler.
 
-## [v0.3.0] 
+## [v0.3.0]
 
 ### Updated
 
@@ -51,7 +57,7 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Add option to deploy redis for rate limiting plugin.
 - Add support to configure custom plugins.
 
-## [v0.2.0] 
+## [v0.2.0]
 
 ### Updated
 
