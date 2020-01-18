@@ -1,12 +1,10 @@
+{{- if .Values.podSecurityPolicy.enabled }}
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "kong.serviceAccountName" . }}-psp
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 spec:
   privileged: false
   fsGroup:
@@ -22,7 +20,41 @@ spec:
   volumes:
     - 'configMap'
     - 'secret'
+    - 'emptyDir'
   allowPrivilegeEscalation: false
   hostNetwork: false
   hostIPC: false
   hostPID: false
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ template "kong.serviceAccountName" . }}-psp
+  labels:
+    {{- include "kong.metaLabels" . | nindent 4 }}
+rules:
+  - apiGroups:
+      - extensions
+    resources:
+      - podsecuritypolicies
+    verbs:
+      - use
+    resourceNames:
+      - {{ template "kong.serviceAccountName" . }}-psp
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "kong.serviceAccountName" . }}-psp
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kong.metaLabels" . | nindent 4 }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "kong.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ template "kong.serviceAccountName" . }}-psp
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}

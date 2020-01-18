@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project's packages adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.5.0]
+
+## Changed
+
+- Update the chart to latest [upstream version 1.0.0](https://github.com/Kong/charts) (#043c2c2)
+
+## Updated
+
+- README contains some more information
+
 ## [v0.4.6]
 
 ## Added
