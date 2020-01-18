@@ -9,7 +9,7 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## Changed
 
-- Update the chart to latest upstream (v1.0.0 - 043c2c2 https://github.com/Kong/charts)
+- Update the chart to latest [upstream version 1.0.0](https://github.com/Kong/charts) (#043c2c2)
 
 ## Updated
 
