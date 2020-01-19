@@ -32,8 +32,7 @@ env:
 
 # Specify Kong's Docker image and repository details here
 image:
-  registry: quay.io
-  repository: giantswarm/kong
+  repository: quay.io/giantswarm/kong
   # repository: kong-docker-kong-enterprise-k8s.bintray.io/kong-enterprise-k8s
   # repository: kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition
   tag: 1.4.2
@@ -47,7 +46,7 @@ image:
   #   - myRegistrKeySecretName
 
 waitImage:
-  repository: giantswarm/busybox
+  repository: quay.io/giantswarm/busybox
   tag: 1.31.0
 
 # Specify Kong admin service configuration
@@ -186,7 +185,7 @@ dblessConfig:
 ingressController:
   enabled: true
   image:
-    repository: giantswarm/kong-ingress-controller
+    repository: quay.io/giantswarm/kong-ingress-controller
     tag: 0.7.0
 
   # Specify Kong Ingress Controller configuration via environment variables
