@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project's packages adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.5.3]
+
+## Updated
+
+- Pull in changes from upstream v1.0.1
+
 ## [v0.5.2]
 
 ## Updated
