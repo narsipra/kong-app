@@ -239,6 +239,10 @@ Kong can be configured via two methods:
 | postgresql.enabled                 | Spin up a new postgres instance for Kong                                              | `false`             |
 | dblessConfig.configMap             | Name of an existing ConfigMap containing the `kong.yml` file. This must have the key `kong.yml`.| `` |
 | dblessConfig.config                | Yaml configuration file for the dbless (declarative) configuration of Kong | see in `values.yaml`    |
+| autoscaling.enabled | Set this to `true` to enable autoscaling | `false`
+| autoscaling.minReplicas | Set minimum number of replicas | `2`
+| autoscaling.maxReplicas | Set maximum number of replicas | `5`
+| autoscaling.metrics | metrics used for autoscaling | See [values.yaml](values.yaml)
 
 ### Ingress Controller Parameters
 

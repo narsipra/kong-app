@@ -320,7 +320,26 @@ nodeSelector: {}
 podAnnotations: {}
 
 # Kong pod count
-replicaCount: 1
+replicaCount: 2
+
+# Enable autoscaling using HorizontalPodAutoscaler
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 70
 
 # Kong Pod Disruption Budget
 podDisruptionBudget:
