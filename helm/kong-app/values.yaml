@@ -32,10 +32,10 @@ env:
 
 # Specify Kong's Docker image and repository details here
 image:
-  repository: kong
+  repository: quay.io/giantswarm/kong
   # repository: kong-docker-kong-enterprise-k8s.bintray.io/kong-enterprise-k8s
   # repository: kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition
-  tag: 1.4
+  tag: 1.4.3
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -44,6 +44,10 @@ image:
   ##
   # pullSecrets:
   #   - myRegistrKeySecretName
+
+waitImage:
+  repository: quay.io/giantswarm/busybox
+  tag: 1.31.0
 
 # Specify Kong admin service configuration
 # Note: It is recommended to not use the Admin API to configure Kong
@@ -181,7 +185,7 @@ dblessConfig:
 ingressController:
   enabled: true
   image:
-    repository: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
+    repository: quay.io/giantswarm/kong-ingress-controller
     tag: 0.7.0
 
   # Specify Kong Ingress Controller configuration via environment variables
@@ -228,7 +232,13 @@ ingressController:
     periodSeconds: 10
     successThreshold: 1
     failureThreshold: 3
-  resources: {}
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
 
 # -----------------------------------------------------------------------------
 # Postgres sub-chart parameters
@@ -258,11 +268,6 @@ postgresql:
 # Miscellaneous parameters
 # -----------------------------------------------------------------------------
 
-waitImage:
-  repository: busybox
-  tag: latest
-  pullPolicy: IfNotPresent
-
 # update strategy
 updateStrategy: {}
   # type: RollingUpdate
@@ -272,13 +277,13 @@ updateStrategy: {}
 
 # If you want to specify resources, uncomment the following
 # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-resources: {}
-  # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
+resources:
+  limits:
+   cpu: 100m
+   memory: 512Mi
+  requests:
+   cpu: 100m
+   memory: 512Mi
 
 # readinessProbe for Kong pods
 # If using Kong Enterprise with RBAC, you must add a Kong-Admin-Token header
@@ -321,7 +326,26 @@ nodeSelector: {}
 podAnnotations: {}
 
 # Kong pod count
-replicaCount: 1
+replicaCount: 2
+
+# Enable autoscaling using HorizontalPodAutoscaler
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 70
 
 # Kong Pod Disruption Budget
 podDisruptionBudget:
@@ -329,7 +353,7 @@ podDisruptionBudget:
   maxUnavailable: "50%"
 
 podSecurityPolicy:
-  enabled: false
+  enabled: true
 
 # securityContext for Kong pods.
 securityContext:
