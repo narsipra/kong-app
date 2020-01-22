@@ -347,7 +347,7 @@ podDisruptionBudget:
   maxUnavailable: "50%"
 
 podSecurityPolicy:
-  enabled: false
+  enabled: true
 
 # securityContext for Kong pods.
 securityContext:
