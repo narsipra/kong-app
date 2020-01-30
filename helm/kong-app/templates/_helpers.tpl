@@ -177,7 +177,7 @@ The name of the service used for the ingress controller's validation webhook
 - name: {{ template "kong.fullname" . }}-tmp
   emptyDir: {}
 {{- range .Values.plugins.configMaps }}
-- name: kong-plugin-{{ empty .path | ternary .pluginName .name }}
+- name: kong-plugin-{{ .pluginName }}
   configMap:
     name: {{ .name }}
 {{- end }}
@@ -226,13 +226,13 @@ The name of the service used for the ingress controller's validation webhook
   mountPath: /etc/secrets/{{ . }}
 {{- end }}
 {{- range .Values.plugins.configMaps }}
-- name:  kong-plugin-{{ empty .path | ternary .pluginName .name }}
-  mountPath: /opt/kong/plugins/{{ coalesce .path .pluginName }}
+- name:  kong-plugin-{{ .pluginName }}
+  mountPath: /opt/kong/plugins/{{ .pluginName }}
   readOnly: true
 {{- end }}
 {{- range .Values.plugins.secrets }}
-- name:  kong-plugin-{{ empty .path | ternary .pluginName .name }}
-  mountPath: /opt/kong/plugins/{{ coalesce .path .pluginName }}
+- name:  kong-plugin-{{ .pluginName }}
+  mountPath: /opt/kong/plugins/{{ .pluginName }}
   readOnly: true
 {{- end }}
 {{- end -}}
@@ -245,7 +245,7 @@ The name of the service used for the ingress controller's validation webhook
 {{- range .Values.plugins.secrets -}}
   {{ $myList = append $myList .pluginName -}}
 {{- end }}
-{{- $myList | uniq | join "," -}}
+{{- $myList | join "," -}}
 {{- end -}}
 
 {{- define "kong.wait-for-db" -}}
@@ -409,10 +409,12 @@ the template that it itself is using form the above sections.
   {{- end }}
 
   {{- if .Values.enterprise.smtp.enabled }}
+    {{- $_ := set $autoEnv "KONG_SMTP_MOCK" "off" -}}
     {{- $_ := set $autoEnv "KONG_PORTAL_EMAILS_FROM" .Values.enterprise.smtp.portal_emails_from -}}
     {{- $_ := set $autoEnv "KONG_PORTAL_EMAILS_REPLY_TO" .Values.enterprise.smtp.portal_emails_reply_to -}}
     {{- $_ := set $autoEnv "KONG_ADMIN_EMAILS_FROM" .Values.enterprise.smtp.admin_emails_from -}}
     {{- $_ := set $autoEnv "KONG_ADMIN_EMAILS_REPLY_TO" .Values.enterprise.smtp.admin_emails_reply_to -}}
+    {{- $_ := set $autoEnv "KONG_SMTP_ADMIN_EMAILS" .Values.enterprise.smtp.smtp_admin_emails -}}
     {{- $_ := set $autoEnv "KONG_SMTP_HOST" .Values.enterprise.smtp.smtp_host -}}
     {{- $_ := set $autoEnv "KONG_SMTP_PORT" .Values.enterprise.smtp.smtp_port -}}
     {{- $_ := set $autoEnv "KONG_SMTP_STARTTLS" (quote .Values.enterprise.smtp.smtp_starttls) -}}
