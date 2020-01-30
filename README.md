@@ -88,6 +88,7 @@ ingressController:
 env:
   database: "postgress" # can be "off" or "cassandra"
   pg_host: 127.0.0.1
+  pg_port: 12345
   pg_user: postgres
   pg_password: # This can also be a string value, but not recommended
     valueFrom:
@@ -97,6 +98,8 @@ env:
 ```
 You can use any valid database configuration option inside `env`. This is also
 how Cassandra can be configured.
+
+_note_: If `pg_port` is not set then it will default to `5432`
 
 #### Installing a database alongside the App
 For testing purposes, it is possible to install a PostgreSQL server alongside
