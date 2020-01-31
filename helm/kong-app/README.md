@@ -257,6 +257,8 @@ section of `values.yaml` file:
 | image.tag                          | Version of the ingress controller                                                     | 0.7.0                                                                        |
 | readinessProbe                     | Kong ingress controllers readiness probe                                              |                                                                              |
 | livenessProbe                      | Kong ingress controllers liveness probe                                               |                                                                              |
+| serviceAccount.create              | Create Service Account for IngresController                                           | true
+| serviceAccount.name                | Use existing Service Account, specifiy it's name                                      | ""
 | installCRDs                        | Create CRDs. Regardless of value of this, Helm v3+ will install the CRDs if those are not present already. Use `--skip-crds` with `helm install` if you want to skip CRD creation. | true |
 | env                                | Specify Kong Ingress Controller configuration via environment variables               |                                                                              |
 | ingressClass                       | The ingress-class value for controller                                                | kong                                                                         |
@@ -267,6 +269,20 @@ section of `values.yaml` file:
 For a complete list of all configuration values you can set in the
 `env` section, please read the Kong Ingress Controller's
 [configuration document](https://github.com/Kong/kubernetes-ingress-controller/blob/master/docs/references/cli-arguments.md).
+
+#### Service Accounts
+By default, a service account is created, however older versions of the chart
+did not create the service account. So if you are upgrading from a chart that
+didn't create the service account, then you will need to create a service
+account and specifiy the name.
+
+You can use `helm template` to generate the YAML needed to create the service
+account. The following is an example:
+
+```shell
+helm template --namespace <existing-app-namespace> --name <existing-app-name> kong -x templates/controller-service-account.yaml | kubectl apply -f -
+helm upgrade --set ingressController.serviceAccount.create=false --set ingressController.serviceAccount.name=<name-of-service-account> <existing-app-name> kong
+```
 
 ### General Parameters
 
@@ -501,7 +517,7 @@ value is your SMTP password.
 
 ### 1.0.2
 
-- Helm 3 support: CRDs are declared in crds directory. Backward compatible support for helm 2. 
+- Helm 3 support: CRDs are declared in crds directory. Backward compatible support for helm 2.
 
 ### 1.0.1
 
