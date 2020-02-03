@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project's packages adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v.6.1]
+
+## Fix
+
+- Issue #41 : Helm upgrade causes service account to be recreated (recreating service token)
+
 ## [v0.6.0]
 
 ## Updated
