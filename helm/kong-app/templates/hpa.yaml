@@ -1,21 +1,21 @@
-{{- if and .Values.autoscaling.enabled }}
-apiVersion: autoscaling/v2beta2
+{{- if .Values.autoscaling.enabled }}
+apiVersion: {{ .Capabilities.APIVersions.Has "autoscaling/v2beta2" | ternary "autoscaling/v2beta2" "autoscaling/v1" }}
 kind: HorizontalPodAutoscaler
 metadata:
   name: "{{ template "kong.fullname" . }}"
   labels:
-    app: "{{ template "kong.name" . }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-    component: app
+    {{- include "kong.metaLabels" . | nindent 4 }}
 spec:
   scaleTargetRef:
-    apiVersion: extensions/v1beta1
+    apiVersion: apps/v1
     kind: Deployment
     name: "{{ template "kong.fullname" . }}"
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  {{- if not (.Capabilities.APIVersions.Has "autoscaling/v2beta2") }}
+  targetCPUUtilizationPercentage: {{ .Values.autscaling.targetCPUUtilizationPercentage | default 80 }}
+  {{- else }}
   metrics:
     {{- toYaml .Values.autoscaling.metrics | nindent 4 }}
+  {{- end }}
 {{- end }}
