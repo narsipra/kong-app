@@ -257,7 +257,6 @@ The name of the service used for the ingress controller's validation webhook
   readOnly: true
 {{- end }}
 {{- end }}
-{{- end }}
 {{- end -}}
 
 {{- define "kong.plugins" -}}
