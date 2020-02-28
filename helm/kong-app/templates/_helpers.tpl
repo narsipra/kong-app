@@ -58,17 +58,17 @@ Create the KONG_PROXY_LISTEN value string
 {{- define "kong.kongProxyListenValue" -}}
 
 {{- if and .Values.proxy.http.enabled .Values.proxy.tls.enabled -}}
-   0.0.0.0:{{ .Values.proxy.http.containerPort }},0.0.0.0:{{ .Values.proxy.tls.containerPort }} ssl
+   0.0.0.0:{{ .Values.proxy.http.containerPort }},0.0.0.0:{{ .Values.proxy.tls.containerPort }} ssl http2
 {{- else -}}
 {{- if .Values.proxy.http.enabled -}}
    0.0.0.0:{{ .Values.proxy.http.containerPort }}
 {{- end -}}
 {{- if .Values.proxy.tls.enabled -}}
-   0.0.0.0:{{ .Values.proxy.tls.containerPort }} ssl
+   0.0.0.0:{{ .Values.proxy.tls.containerPort }} ssl http2
 {{- end -}}
 {{- end -}}
 
-{{- end }}
+{{- end -}}
 
 {{/*
 Create the KONG_ADMIN_GUI_LISTEN value string
@@ -241,8 +241,8 @@ The name of the service used for the ingress controller's validation webhook
   mountPath: {{ $mountPath }}
   readOnly: true
 {{- range .subdirectories }}
-- name: {{ .name }}
-  mountPath: {{ printf "%s/%s" $mountPath .path }}
+- name: {{ .name  }}
+  mountPath: {{ printf "%s/%s" $mountPath ( .path | default .name ) }}
   readOnly: true
 {{- end }}
 {{- end }}
@@ -267,7 +267,7 @@ The name of the service used for the ingress controller's validation webhook
 {{- range .Values.plugins.secrets -}}
   {{ $myList = append $myList .pluginName -}}
 {{- end }}
-{{- $myList | uniq | join "," -}}
+{{- $myList | join "," -}}
 {{- end -}}
 
 {{- define "kong.wait-for-db" -}}
@@ -410,7 +410,7 @@ the template that it itself is using form the above sections.
 
   {{- if .Values.enterprise.portal.enabled }}
     {{- $_ := set $autoEnv "KONG_PORTAL" "on" -}}
-    {{- if .Values.enterprise.portal.portal_auth }}
+    {{- if .Values.enterprise.portal.portal_auth }} {{/* TODO: deprecated, remove in a future version */}}
       {{- $_ := set $autoEnv "KONG_PORTAL_AUTH" .Values.enterprise.portal.portal_auth -}}
       {{- $portalSession := include "secretkeyref" (dict "name" .Values.enterprise.portal.session_conf_secret "key" "portal_session_conf") -}}
       {{- $_ := set $autoEnv "KONG_PORTAL_SESSION_CONF" $portalSession -}}

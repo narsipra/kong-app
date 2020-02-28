@@ -32,10 +32,10 @@ env:
 
 # Specify Kong's Docker image and repository details here
 image:
-  repository: quay.io/giantswarm/kong
+  repository: kong
   # repository: kong-docker-kong-enterprise-k8s.bintray.io/kong-enterprise-k8s
   # repository: kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition
-  tag: 2.0.1
+  tag: "2.0"
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -44,10 +44,6 @@ image:
   ##
   # pullSecrets:
   #   - myRegistrKeySecretName
-
-waitImage:
-  repository: quay.io/giantswarm/busybox
-  tag: 1.31.0
 
 # Specify Kong admin service configuration
 # Note: It is recommended to not use the Admin API to configure Kong
@@ -139,10 +135,16 @@ proxy:
 # The `name` property refers to the name of the ConfigMap or Secret
 # itself, while the pluginName refers to the name of the plugin as it appears
 # in Kong.
+# Subdirectories (which are optional) require separate ConfigMaps/Secrets.
+# "path" indicates their directory under the main plugin directory: the example
+# below will mount the contents of kong-plugin-rewriter-migrations at "/opt/kong/rewriter/migrations".
 plugins: {}
   # configMaps:
   # - pluginName: rewriter
   #   name: kong-plugin-rewriter
+  #   subdirectories:
+  #   - name: kong-plugin-rewriter-migrations
+  #     path: migrations
   # secrets:
   # - pluginName: rewriter
   #   name: kong-plugin-rewriter
@@ -187,7 +189,7 @@ dblessConfig:
 ingressController:
   enabled: true
   image:
-    repository: quay.io/giantswarm/kong-ingress-controller
+    repository: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
     tag: 0.7.1
 
   # Specify Kong Ingress Controller configuration via environment variables
@@ -234,13 +236,7 @@ ingressController:
     periodSeconds: 10
     successThreshold: 1
     failureThreshold: 3
-  resources:
-    limits:
-      cpu: 100m
-      memory: 256Mi
-    requests:
-      cpu: 100m
-      memory: 256Mi
+  resources: {}
 
 # -----------------------------------------------------------------------------
 # Postgres sub-chart parameters
@@ -270,6 +266,11 @@ postgresql:
 # Miscellaneous parameters
 # -----------------------------------------------------------------------------
 
+waitImage:
+  repository: busybox
+  tag: latest
+  pullPolicy: IfNotPresent
+
 # update strategy
 updateStrategy: {}
   # type: RollingUpdate
@@ -279,13 +280,13 @@ updateStrategy: {}
 
 # If you want to specify resources, uncomment the following
 # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-resources:
-  limits:
-   cpu: 100m
-   memory: 512Mi
-  requests:
-   cpu: 100m
-   memory: 512Mi
+resources: {}
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
 
 # readinessProbe for Kong pods
 # If using Kong Enterprise with RBAC, you must add a Kong-Admin-Token header
@@ -328,26 +329,7 @@ nodeSelector: {}
 podAnnotations: {}
 
 # Kong pod count
-replicaCount: 2
-
-# Enable autoscaling using HorizontalPodAutoscaler
-autoscaling:
-  enabled: false
-  minReplicas: 2
-  maxReplicas: 5
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 70
-    - type: Resource
-      resource:
-        name: memory
-        target:
-          type: Utilization
-          averageUtilization: 70
+replicaCount: 1
 
 # Enable autoscaling using HorizontalPodAutoscaler
 autoscaling:
@@ -371,7 +353,10 @@ podDisruptionBudget:
   maxUnavailable: "50%"
 
 podSecurityPolicy:
-  enabled: true
+  enabled: false
+
+
+priorityClassName: ""
 
 # securityContext for Kong pods.
 securityContext:
@@ -399,21 +384,10 @@ enterprise:
   # This secret must contain a single 'license' key, containing your base64-encoded license data
   # The license secret is required for all Kong Enterprise deployments
   license_secret: you-must-create-a-kong-license-secret
-  # Session configuration secret
-  # The session conf secret is required if using RBAC or the Portal
   vitals:
     enabled: true
   portal:
     enabled: false
-    # portal_auth here sets the default authentication mechanism for the Portal
-    # FIXME This can be changed per-workspace, but must currently default to
-    # basic-auth to work around limitations with session configuration
-    portal_auth: basic-auth
-    # If the Portal is enabled and any workspace's Portal uses authentication,
-    # this Secret must contain an portal_session_conf key
-    # The key value must be a secret configuration, following the example at
-    # https://docs.konghq.com/enterprise/latest/developer-portal/configuration/authentication/sessions
-    session_conf_secret: you-must-create-a-portal-session-conf-secret
   rbac:
     enabled: false
     admin_gui_auth: basic-auth

@@ -19,6 +19,7 @@ $ helm install kong/kong
 ## Table of content
 
 - [Prerequisites](#prerequisites)
+- [Helm 2 vs Helm 3](#important-helm-2-vs-helm-3)
 - [Install](#install)
 - [Uninstall](#uninstall)
 - [Kong Enterprise](#kong-enterprise)
@@ -40,7 +41,7 @@ $ helm install kong/kong
   - [RBAC](#rbac)
   - [Sessions](#sessions)
   - [Email/SMTP](#emailsmtp)
-- [Changelog](#changelog)
+- [Changelog](https://github.com/Kong/charts/blob/master/charts/kong/CHANGELOG.md)
 - [Seeking help](#seeking-help)
 
 ## Prerequisites
@@ -48,6 +49,21 @@ $ helm install kong/kong
 - Kubernetes 1.12+
 - PV provisioner support in the underlying infrastructure if persistence
   is needed for Kong datastore.
+
+## Important: Helm 2 vs Helm 3
+
+Custom Resource Definitions (CRDs) are handled differently in Helm 2 vs Helm 3. In short:
+
+#### Helm 2
+If you want CRDs to be installed, make sure `ingressController.installCRDs` is set to `true` (the default value)
+
+#### Helm 3
+Make sure `ingressController.installCRDs` is set to `false` - note that the default is `false`.
+You can do so either by passing in a custom `values.yaml` (`-f` when running helm)
+or passing `--set ingressController.installCRDs=false` at the command line.
+**If you do not set this value to `false`, the helm chart will not install correctly.**
+
+Use `--skip-crds` with `helm install` if you want to skip CRD creation. 
 
 ## Install
 
@@ -143,19 +159,19 @@ for more details.
 
 There are three different packages of Kong that are available:
 
-- **Kong Gateway**
+- **Kong Gateway**\
   This is the [Open-Source](https://github.com/kong/kong) offering. It is a
   full-blown API Gateway and Ingress solution with a wide-array of functionality.
   When Kong Gateway is combined with the Ingress based configuration method,
   you get Kong for Kubernetes. This is the default deployment for this Helm
   Chart.
-- **Kong Enterprise K8S**
+- **Kong Enterprise K8S**\
   This package builds up on top of the Open-Source Gateway and bundles in all
   the Enterprise-only plugins as well.
   When Kong Enterprise K8S is combined with the Ingress based
   configuration method, you get Kong for Kubernetes Enterprise.
   This package also comes with 24x7 support from Kong Inc.
-- **Kong Enterprise**
+- **Kong Enterprise**\
   This is the full-blown Enterprise package which packs with itself all the
   Enterprise functionality like Manager, Portal, Vitals, etc.
   This package can't be run in DB-less mode.
@@ -167,7 +183,7 @@ the [Kong Enterprise Parameters](#kong-enterprise-parameters) section.
 ### Configuration method
 
 Kong can be configured via two methods:
-- **Ingress and CRDs**
+- **Ingress and CRDs**\
   The configuration for Kong is done via `kubectl` and Kubernetes-native APIs.
   This is also known as Kong Ingress Controller or Kong for Kubernetes and is
   the default deployment pattern for this Helm Chart. The configuration
@@ -178,7 +194,7 @@ Kong can be configured via two methods:
   on Kong Ingress Controller.
   To configure and fine-tune the controller, please read the
   [Ingress Controller Parameters](#ingress-controller-parameters) section.
-- **Admin API**
+- **Admin API**\
   This is the traditional method of running and configuring Kong.
   By default, the Admin API of Kong is not exposed as a Service. This
   can be controlled via `admin.enabled` and `env.admin_listen` parameters.
@@ -230,6 +246,7 @@ Kong can be configured via two methods:
 | proxy.ingress.hosts                | List of ingress hosts.                                                                | `[]`                |
 | proxy.ingress.path                 | Ingress path.                                                                         | `/`                 |
 | proxy.ingress.annotations          | Ingress annotations. See documentation for your ingress controller for details        | `{}`                |
+| proxy.annotations                  | Service annotations                                                                   | `{}`                |
 | plugins                            | Install custom plugins into Kong via ConfigMaps or Secrets                            | `{}`                |
 | env                                | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/)      |                     |
 | runMigrations                      | Run Kong migrations job                                                               | `true`              |
@@ -253,8 +270,9 @@ section of `values.yaml` file:
 | image.tag                          | Version of the ingress controller                                                     | 0.7.0                                                                        |
 | readinessProbe                     | Kong ingress controllers readiness probe                                              |                                                                              |
 | livenessProbe                      | Kong ingress controllers liveness probe                                               |                                                                              |
-| serviceAccount.create              | Create Service Account for IngresController                                           | true
-| serviceAccount.name                | Use existing Service Account, specifiy it's name                                      | ""
+| installCRDs                        | Create CRDs. **FOR HELM3, MAKE SURE THIS VALUE IS SET TO `false`.**                   | true                                                                         |
+| serviceAccount.create              | Create Service Account for ingress controller                                         | true
+| serviceAccount.name                | Use existing Service Account, specifiy its name                                       | ""
 | installCRDs                        | Create CRDs. Regardless of value of this, Helm v3+ will install the CRDs if those are not present already. Use `--skip-crds` with `helm install` if you want to skip CRD creation. | true |
 | env                                | Specify Kong Ingress Controller configuration via environment variables               |                                                                              |
 | ingressClass                       | The ingress-class value for controller                                                | kong                                                                         |
@@ -265,20 +283,6 @@ section of `values.yaml` file:
 For a complete list of all configuration values you can set in the
 `env` section, please read the Kong Ingress Controller's
 [configuration document](https://github.com/Kong/kubernetes-ingress-controller/blob/master/docs/references/cli-arguments.md).
-
-#### Service Accounts
-By default, a service account is created, however older versions of the chart
-did not create the service account. So if you are upgrading from a chart that
-didn't create the service account, then you will need to create a service
-account and specifiy the name.
-
-You can use `helm template` to generate the YAML needed to create the service
-account. The following is an example:
-
-```shell
-helm template --namespace <existing-app-namespace> --name <existing-app-name> kong -x templates/controller-service-account.yaml | kubectl apply -f -
-helm upgrade --set ingressController.serviceAccount.create=false --set ingressController.serviceAccount.name=<name-of-service-account> <existing-app-name> kong
-```
 
 ### General Parameters
 
@@ -301,6 +305,7 @@ helm upgrade --set ingressController.serviceAccount.create=false --set ingressCo
 | podDisruptionBudget.maxUnavailable | Represents the minimum number of Pods that can be unavailable (integer or percentage) | `50%`               |
 | podDisruptionBudget.minAvailable   | Represents the number of Pods that must be available (integer or percentage)          |                     |
 | podSecurityPolicy.enabled          | Enable podSecurityPolicy for Kong                                                     | `false`             |
+| priorityClassName                  | Set pod scheduling priority class for Kong pods                                       | ""                  |
 | serviceMonitor.enabled             | Create ServiceMonitor for Prometheus Operator                                         | false               |
 | serviceMonitor.interval            | Scrapping interval                                                                    | 10s                 |
 | serviceMonitor.namespace           | Where to create ServiceMonitor                                                        |                     |
@@ -447,9 +452,13 @@ accessible outside the Pod.
 
 Login sessions for Kong Manager and the Developer Portal make use of
 [the Kong Sessions plugin](https://docs.konghq.com/enterprise/latest/kong-manager/authentication/sessions).
-Their configuration must be stored in Secrets, as it contains an HMAC key.
-If using either RBAC or the Portal, create a Secret with `admin_gui_session_conf`
-and `portal_session_conf` keys.
+When configured via values.yaml, their configuration must be stored in Secrets,
+as it contains an HMAC key.
+
+Kong Manager's session configuration must be configured via values.yaml,
+whereas this is optional for the Developer Portal on versions 0.36+. Providing
+Portal session configuration in values.yaml provides the default session
+configuration, which can be overriden on a per-workspace basis.
 
 ```
 $ cat admin_gui_session_conf
@@ -462,9 +471,9 @@ secret/kong-session-config created
 The exact plugin settings may vary in your environment. The `secret` should
 always be changed for both configurations.
 
-After creating your secret, set its name in values.yaml, in the
-`.enterprise.rbac.session_conf_secret` and
-`.enterprise.portal.session_conf_secret` keys.
+After creating your secret, set its name in values.yaml in
+`.enterprise.rbac.session_conf_secret`. If you create a Portal configuration,
+add it at `env.portal_session_conf` using a secretKeyRef.
 
 ### Email/SMTP
 
@@ -482,333 +491,6 @@ If your SMTP server requires authentication, you should the `username` and
 `smtp_password_secret` keys under `.enterprise.smtp.auth`.
 `smtp_password_secret` must be a Secret containing an `smtp_password` key whose
 value is your SMTP password.
-
-## Changelog
-
-### 1.2.0
-
-#### Improvements
-* Added support for HorizontalPodAutoscaler (https://github.com/Kong/charts/pull/12)
-* Environment variables are now consistently sorted alphabetically. (https://github.com/Kong/charts/pull/29)
-
-#### Fixed
-* Removed temporary ServiceAccount template, which caused upgrades to break the existing ServiceAccount's credentials. Moved template and instructions for use to FAQs, as the temporary user is only needed in rare scenarios. (https://github.com/Kong/charts/pull/31)
-* Fix an issue where the wait-for-postgres job did not know which port to use in some scenarios. (https://github.com/Kong/charts/pull/28)
-
-#### Documentation
-* Added warning regarding volume mounts (https://github.com/Kong/charts/pull/25)
-
-### 1.1.1
-
-#### Fixed
-
-* Add missing `smtp_admin_emails` and `smtp_mock = off` to SMTP enabled block in
-  `kong.env`.
-
-#### CI changes
-
-* Remove version bump requirement in preparation for new release model.
-
-### 1.1.0
-
-> https://github.com/Kong/charts/pull/4
-
-#### Improvements
-
-* Significantly refactor the `env`/EnvVar templating system to determine the
-  complete set of environment variables (both user-defined variables and
-  variables generated from other sections of values.yaml) and resolve conflicts
-  before rendering. User-provided values are now guaranteed to take precedence
-  over generated values. Previously, precedence relied on a Kubernetes
-  implementation quirk that was not consistent across all Kubernetes providers.
-* Combine templates for license, session configuration, etc. that generate
-  `secretKeyRef` values into a single generic template.
-
-### 1.0.3
-
-- Fix invalid namespace for pre-migrations and Role.
-- Fix whitespaces formatting in README.
-
-### 1.0.2
-
-- Helm 3 support: CRDs are declared in crds directory. Backward compatible support for helm 2.
-
-### 1.0.1
-
-Fixed invalid namespace variable name causing ServiceAccount and Role to be generated in other namespace than desired.
-
-### 1.0.0
-
-There are not code changes between `1.0.0` and `0.36.5`.
-From this version onwards, charts are hosted at https://charts.konghq.com.
-
-The `0.x` versions of the chart are available in Helm's
-[Charts](https://github.com/helm/charts) repository are are now considered
-deprecated.
-
-### 0.36.5
-
-> PR https://github.com/helm/charts/pull/20099
-
-#### Improvements
-
-- Allow `grpc` protocol for KongPlugins
-
-### 0.36.4
-
-> PR https://github.com/helm/charts/pull/20051
-
-#### Fixed
-
-- Issue: [`Ingress Controller errors when chart is redeployed with Admission
-  Webhook enabled`](https://github.com/helm/charts/issues/20050)
-
-### 0.36.3
-
-> PR https://github.com/helm/charts/pull/19992
-
-#### Fixed
-
-- Fix spacing in ServiceMonitor when label is specified in config
-
-### 0.36.2
-
-> PR https://github.com/helm/charts/pull/19955
-
-#### Fixed
-
-- Set `sideEffects` and `admissionReviewVersions` for Admission Webhook
-- timeouts for liveness and readiness probes has been changed from `1s` to `5s`
-
-### 0.36.1
-
-> PR https://github.com/helm/charts/pull/19946
-
-#### Fixed
-
-- Added missing watch permission to custom resources
-
-### 0.36.0
-
-> PR https://github.com/helm/charts/pull/19916
-
-#### Upgrade Instructions
-
-- When upgrading from <0.35.0, in-place chart upgrades will fail.
-  It is necessary to delete the helm release with `helm del --purge $RELEASE` and redeploy from scratch.
-  Note that this will cause downtime for the kong proxy.
-
-#### Improvements
-
-- Fixed Deployment's label selector that prevented in-place chart upgrades.
-
-### 0.35.1
-
-> PR https://github.com/helm/charts/pull/19914
-
-#### Improvements
-
-- Update CRDs to Ingress Controller 0.7
-- Optimize readiness and liveness probes for more responsive health checks
-- Fixed incorrect space in NOTES.txt
-
-### 0.35.0
-
-> PR [#19856](https://github.com/helm/charts/pull/19856)
-
-#### Improvements
-
-- Labels on all resources have been updated to adhere to the Helm Chart
-  guideline here:
-  https://v2.helm.sh/docs/developing_charts/#syncing-your-chart-repository
-
-### 0.34.2
-
-> PR [#19854](https://github.com/helm/charts/pull/19854)
-
-This release contains no user-visible changes
-
-#### Under the hood
-
- - Various tests have been consolidated to speed up CI.
-
-### 0.34.1
-
-> PR [#19887](https://github.com/helm/charts/pull/19887)
-
-#### Fixed
-
-- Correct indentation for Job securityContexts.
-
-### 0.34.0
-
-> PR [#19885](https://github.com/helm/charts/pull/19885)
-
-#### New features
-
-- Update default version of Ingress Controller to 0.7.0
-
-### 0.33.1
-
-> PR [#19852](https://github.com/helm/charts/pull/19852)
-
-#### Fixed
-
-- Correct an issue with white space handling within `final_env` helper.
-
-### 0.33.0
-
-> PR [#19840](https://github.com/helm/charts/pull/19840)
-
-#### Dependencies
-
-- Postgres sub-chart has been bumped up to 8.1.2
-
-#### Fixed
-
-- Removed podDisruption budge for Ingress Controller. Ingress Controller and
-  Kong run in the same pod so this was no longer applicable
-- Migration job now receives the same environment variable and configuration
-  as that of the Kong pod.
-- If Kong is configured to run with Postgres, the Kong pods now always wait
-  for Postgres to start. Previously this was done only when the sub-chart
-  Postgres was deployed.
-- A hard-coded container name is used for kong: `proxy`. Previously this
-  was auto-generated by Helm. This deterministic naming allows for simpler
-  scripts and documentation.
-
-#### Under the hood
-
-Following changes have no end user visible effects:
-
-- All Custom Resource Definitions have been consolidated into a single
-  template file
-- All RBAC resources have been consolidated into a single template file
-- `wait-for-postgres` container has been refactored and de-duplicated
-
-### 0.32.1
-
-#### Improvements
-
-- This is a doc only release. No code changes have been done.
-- Post installation steps have been simplified and now point to a getting
-  started page
-- Misc updates to README:
-  - Document missing variables
-  - Remove outdated variables
-  - Revamp and rewrite major portions of the README
-  - Added a table of content to make the content navigable
-
-### 0.32.0
-
-#### Improvements
-
-- Create and mount emptyDir volumes for `/tmp` and `/kong_prefix` to allow
-  for read-only root filesystem securityContexts and PodSecurityPolicys.
-- Use read-only mounts for custom plugin volumes.
-- Update stock PodSecurityPolicy to allow emptyDir access.
-- Override the standard `/usr/local/kong` prefix to the mounted emptyDir
-  at `/kong_prefix` in `.Values.env`.
-- Add securityContext injection points to template. By default,
-  it sets Kong pods to run with UID 1000.
-
-#### Fixes
-
-- Correct behavior for the Vitals toggle.
-  Vitals defaults to on in all current Kong Enterprise releases, and
-  the existing template only created the Vitals environment variable
-  if `.Values.enterprise.enabled == true`. Inverted template to create
-  it (and set it to "off") if that setting is instead disabled.
-- Correct an issue where custom plugin configurations would block Kong
-  from starting.
-
-### 0.31.0
-
-#### Breaking changes
-
-- Admin Service is disabled by default (`admin.enabled`)
-- Default for `proxy.type` has been changed to `LoadBalancer`
-
-#### New features
-
-- Update default version of Kong to 1.4
-- Update default version of Ingress Controller to 0.6.2
-- Add support to disable kong-admin service via `admin.enabled` flag.
-
-### 0.31.2
-
-#### Fixes
-
-- Do not remove white space between documents when rendering
-  `migrations-pre-upgrade.yaml`
-
-### 0.30.1
-
-#### New Features
-
-- Add support for specifying Proxy service ClusterIP
-
-### 0.30.0
-
-#### Breaking changes
-
-- `admin_gui_auth_conf_secret` is now required for Kong Manager
-  authentication methods other than `basic-auth`.
-  Users defining values for `admin_gui_auth_conf` should migrate them to
-  an externally-defined secret with a key of `admin_gui_auth_conf` and
-  reference the secret name in `admin_gui_auth_conf_secret`.
-
-### 0.29.0
-
-#### New Features
-
-- Add support for specifying Ingress Controller environment variables.
-
-### 0.28.0
-
-#### New Features
-
-- Added support for the Validating Admission Webhook with the Ingress Controller.
-
-### 0.27.2
-
-#### Fixes
-
-- Do not create a ServiceAccount if it is not necessary.
-- If a configuration change requires creating a ServiceAccount,
-  create a temporary ServiceAccount to allow pre-upgrade tasks to
-  complete before the regular ServiceAccount is created.
-
-### 0.27.1
-
-#### Documentation updates
-- Retroactive changelog update for 0.24 breaking changes.
-
-### 0.27.0
-
-#### Breaking changes
-
-- DB-less mode is enabled by default.
-- Kong is installed as an Ingress Controller for the cluster by default.
-
-### 0.25.0
-
-#### New features
-
-- Add support for PodSecurityPolicy
-- Require creation of a ServiceAccount
-
-### 0.24.0
-
-#### Breaking changes
-
-- The configuration format for ingresses in values.yaml has changed.
-Previously, all ingresses accepted an array of hostnames, and would create
-ingress rules for each. Ingress configuration for services other than the proxy
-now accepts a single hostname, which allows simpler TLS configuration and
-automatic population of `admin_api_uri` and similar settings. Configuration for
-the proxy ingress is unchanged, but its documentation now accurately reflects
-the TLS configuration needed.
 
 ## Seeking help
 
