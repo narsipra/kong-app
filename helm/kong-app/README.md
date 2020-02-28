@@ -283,20 +283,6 @@ For a complete list of all configuration values you can set in the
 `env` section, please read the Kong Ingress Controller's
 [configuration document](https://github.com/Kong/kubernetes-ingress-controller/blob/master/docs/references/cli-arguments.md).
 
-#### Service Accounts
-By default, a service account is created, however older versions of the chart
-did not create the service account. So if you are upgrading from a chart that
-didn't create the service account, then you will need to create a service
-account and specifiy the name.
-
-You can use `helm template` to generate the YAML needed to create the service
-account. The following is an example:
-
-```shell
-helm template --namespace <existing-app-namespace> --name <existing-app-name> kong -x templates/controller-service-account.yaml | kubectl apply -f -
-helm upgrade --set ingressController.serviceAccount.create=false --set ingressController.serviceAccount.name=<name-of-service-account> <existing-app-name> kong
-```
-
 ### General Parameters
 
 | Parameter                          | Description                                                                           | Default             |
