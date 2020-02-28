@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project's packages adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.7.0]
+
+### Updated
+ - Sync with upstream [v1.3.0](https://github.com/Kong/charts/blob/master/charts/kong/CHANGELOG.md#130)
+ - Kong version bumped to 2.0.1
+ - Kong Ingress controller bumped to 0.7.1
+
 ## [v0.6.2]
 
 ### Add
