@@ -1,4 +1,4 @@
-apiVersion: v1.1
+apiVersion: v1
 description: The Cloud-Native Ingress and
   Service Mesh for APIs and Microservices
 engine: gotpl
