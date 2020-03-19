@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kong.fullname" . }}-metrics
+  annotations:
+    prometheus.io/scheme: http
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '9542'
+spec:
+  ports:
+  - name: {{ template "kong.fullname" . }}-metrics
+    port: 9542
+    protocol: TCP
+    targetPort: 9542
+  selector:
+{{- include "kong.selectorLabels" . | nindent 4 }}
+  sessionAffinity: None
+  type: ClusterIP
