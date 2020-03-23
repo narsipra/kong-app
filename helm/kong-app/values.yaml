@@ -331,7 +331,14 @@ tolerations: []
 nodeSelector: {}
 
 # Annotation to be added to Kong pods
-podAnnotations: {}
+# Removing giantswarm.io annotations will result in Giant Swarm being unable to
+# monitor the deployment.
+podAnnotations:
+  giantswarm.io/monitoring: "true"
+  giantswarm.io/monitoring-path: metrics
+  giantswarm.io/monitoring-port: "9542"
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "9542"
 
 # Kong pod count
 replicaCount: 1
