@@ -204,7 +204,11 @@ ingressController:
     failurePolicy: Fail
     port: 8080
 
-  ingressClass: kong
+  # This has been changed from the default `kong`
+  # as it allows this app to exist alongside other
+  # ingress controllers, such as nginx which is the
+  # default in the cluster.
+  ingressClass: kong-app
 
   rbac:
     # Specifies whether RBAC resources should be created
