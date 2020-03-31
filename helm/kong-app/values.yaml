@@ -291,11 +291,11 @@ updateStrategy: {}
 # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
 resources:
   limits:
-   cpu: 100m
-   memory: 512Mi
+    cpu: 100m
+    memory: 512Mi
   requests:
-   cpu: 100m
-   memory: 512Mi
+    cpu: 100m
+    memory: 512Mi
 
 # readinessProbe for Kong pods
 # If using Kong Enterprise with RBAC, you must add a Kong-Admin-Token header
