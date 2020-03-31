@@ -7,8 +7,8 @@ workflows:
     jobs:
       - architect/push-to-app-catalog:
           name: "package and push kong-app chart"
-          app_catalog: "giantswarm-incubator-catalog"
-          app_catalog_test: "giantswarm-incubator-test-catalog"
+          app_catalog: "giantswarm-catalog"
+          app_catalog_test: "giantswarm-test-catalog"
           chart: "kong-app"
           # Trigger job on git tag.
           filters:
