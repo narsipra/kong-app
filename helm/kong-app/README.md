@@ -184,19 +184,19 @@ for more details.
 
 There are three different packages of Kong that are available:
 
-- **Kong Gateway**\
+- **Kong Gateway**
   This is the [Open-Source](https://github.com/kong/kong) offering. It is a
   full-blown API Gateway and Ingress solution with a wide-array of functionality.
   When Kong Gateway is combined with the Ingress based configuration method,
   you get Kong for Kubernetes. This is the default deployment for this Helm
   Chart.
-- **Kong Enterprise K8S**\
+- **Kong Enterprise K8S**
   This package builds up on top of the Open-Source Gateway and bundles in all
   the Enterprise-only plugins as well.
   When Kong Enterprise K8S is combined with the Ingress based
   configuration method, you get Kong for Kubernetes Enterprise.
   This package also comes with 24x7 support from Kong Inc.
-- **Kong Enterprise**\
+- **Kong Enterprise**
   This is the full-blown Enterprise package which packs with itself all the
   Enterprise functionality like Manager, Portal, Vitals, etc.
   This package can't be run in DB-less mode.
@@ -247,7 +247,7 @@ helm install admin-only -f shared-values.yaml -f only-admin.yaml kong/kong
 ### Configuration method
 
 Kong can be configured via two methods:
-- **Ingress and CRDs**\
+- **Ingress and CRDs**
   The configuration for Kong is done via `kubectl` and Kubernetes-native APIs.
   This is also known as Kong Ingress Controller or Kong for Kubernetes and is
   the default deployment pattern for this Helm Chart. The configuration
@@ -258,7 +258,7 @@ Kong can be configured via two methods:
   on Kong Ingress Controller.
   To configure and fine-tune the controller, please read the
   [Ingress Controller Parameters](#ingress-controller-parameters) section.
-- **Admin API**\
+- **Admin API**
   This is the traditional method of running and configuring Kong.
   By default, the Admin API of Kong is not exposed as a Service. This
   can be controlled via `admin.enabled` and `env.admin_listen` parameters.
@@ -361,10 +361,8 @@ section of `values.yaml` file:
 | image.tag                          | Version of the ingress controller                                                     | 0.7.0                                                                        |
 | readinessProbe                     | Kong ingress controllers readiness probe                                              |                                                                              |
 | livenessProbe                      | Kong ingress controllers liveness probe                                               |                                                                              |
-| installCRDs                        | Create CRDs. **FOR HELM3, MAKE SURE THIS VALUE IS SET TO `false`.**                   | true                                                                         |
-| serviceAccount.create              | Create Service Account for ingress controller                                         | true
-| serviceAccount.name                | Use existing Service Account, specify its name                                        | ""
-| serviceAccount.annotations         | Annotations for Service Account                                                       | {}
+| serviceAccount.create              | Create Service Account for IngresController                                           | true
+| serviceAccount.name                | Use existing Service Account, specifiy it's name                                      | ""
 | installCRDs                        | Create CRDs. Regardless of value of this, Helm v3+ will install the CRDs if those are not present already. Use `--skip-crds` with `helm install` if you want to skip CRD creation. | true |
 | env                                | Specify Kong Ingress Controller configuration via environment variables               |                                                                              |
 | ingressClass                       | The ingress-class value for controller                                                | kong                                                                         |
