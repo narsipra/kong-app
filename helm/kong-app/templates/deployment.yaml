@@ -5,7 +5,10 @@ metadata:
   labels:
     {{- include "kong.metaLabels" . | nindent 4 }}
     app.kubernetes.io/component: app
-    giantswarm.io/monitoring_basic_sli: "true"
+  annotations:
+    {{- if .Values.deploymentAnnotations }}
+{{ toYaml .Values.deploymentAnnotations | indent 4 }}
+    {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -64,12 +67,31 @@ spec:
             exec:
               command: [ "/bin/sh", "-c", "kong quit" ]
         ports:
+        {{/* TODO: remove legacy admin port template */}}
+        {{- if .Values.admin.containerPort }}
         - name: admin
           containerPort: {{ .Values.admin.containerPort }}
           {{- if .Values.admin.hostPort }}
           hostPort: {{ .Values.admin.hostPort }}
           {{- end}}
           protocol: TCP
+        {{- end }}
+        {{- if .Values.admin.http.enabled }}
+        - name: admin
+          containerPort: {{ .Values.admin.http.containerPort }}
+          {{- if .Values.admin.http.hostPort }}
+          hostPort: {{ .Values.admin.http.hostPort }}
+          {{- end}}
+          protocol: TCP
+        {{- end }}
+        {{- if .Values.admin.tls.enabled }}
+        - name: admin-tls
+          containerPort: {{ .Values.admin.tls.containerPort }}
+          {{- if .Values.admin.tls.hostPort }}
+          hostPort: {{ .Values.admin.tls.hostPort }}
+          {{- end}}
+          protocol: TCP
+        {{- end }}
         {{- if .Values.proxy.http.enabled }}
         - name: proxy
           containerPort: {{ .Values.proxy.http.containerPort }}
@@ -83,6 +105,30 @@ spec:
           containerPort: {{ .Values.proxy.tls.containerPort }}
           {{- if .Values.proxy.tls.hostPort }}
           hostPort: {{ .Values.proxy.tls.hostPort }}
+          {{- end}}
+          protocol: TCP
+        {{- end }}
+        {{- range .Values.proxy.stream }}
+        - name: stream-{{ .containerPort }}
+          containerPort: {{ .containerPort }}
+          {{- if .hostPort }}
+          hostPort: {{ .hostPort }}
+          {{- end}}
+          protocol: TCP
+        {{- end }}
+        {{- if .Values.status.http.enabled }}
+        - name: status
+          containerPort: {{ .Values.status.http.containerPort }}
+          {{- if .Values.status.http.hostPort }}
+          hostPort: {{ .Values.status.http.hostPort }}
+          {{- end}}
+          protocol: TCP
+        {{- end }}
+        {{- if .Values.status.tls.enabled }}
+        - name: status-tls
+          containerPort: {{ .Values.status.tls.containerPort }}
+          {{- if .Values.status.tls.hostPort }}
+          hostPort: {{ .Values.status.tls.hostPort }}
           {{- end}}
           protocol: TCP
         {{- end }}
