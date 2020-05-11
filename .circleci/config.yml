@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  architect: giantswarm/architect@0.8.9
+  architect: giantswarm/architect@dev:allow_additional_chart_repos
 
 workflows:
   package-and-push-chart-on-tag:
@@ -8,6 +8,7 @@ workflows:
       - architect/run-kat-tests:
           name: "test with kat"
           chart: "kong-app"
+          ct_config: ".circleci/ct-config.yaml"
           filters:
             tags:
               only: /^v.*/
@@ -18,6 +19,7 @@ workflows:
           app_catalog: "giantswarm-catalog"
           app_catalog_test: "giantswarm-test-catalog"
           chart: "kong-app"
+          ct_config: ".circleci/ct-config.yaml"
           # Trigger job on git tag.
           filters:
             tags:
