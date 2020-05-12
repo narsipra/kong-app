@@ -150,12 +150,6 @@ Note:
 
 ## Known Issues
 
-- TLS SNI Issues
-  Using same certificate across multiple endpoints can result in the following
-  error:
-  ```while processing event: {Create} failed: 400 Bad Request {"message":"schema violation (snis: xyz.api.example.com already associated with existing certificate '9798a52d-86fb-41f1-a7c3-eb9331f39092')","name":"schema violation","fields":{"snis":"xyz.api.example.com already associated with existing certificate '9798a52d-86fb-41f1-a7c3-eb9331f39092'"},"code":2}```
-  This is related to : https://github.com/Kong/kubernetes-ingress-controller/issues/524
-
 ## Credit
 
 * https://github.com/Kong/charts/
