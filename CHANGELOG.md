@@ -7,6 +7,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [v0.8.0]
+
 - Sync with upstream - [v1.5.0](https://github.com/Kong/charts/blob/master/charts/kong/CHANGELOG.md#150)
 - Bump Kong version - [v2.0.4](https://github.com/Kong/kong/blob/master/CHANGELOG.md#204)
 - Bump Kong Ingress Controller version - [v0.8.1](https://github.com/Kong/kubernetes-ingress-controller/blob/master/CHANGELOG.md#081---20200415)
