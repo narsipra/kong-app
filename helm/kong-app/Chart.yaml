@@ -7,5 +7,6 @@ icon: https://s3.amazonaws.com/downloads.kong/universe/assets/icon-kong-inc-larg
 name: kong-app
 sources:
 - https://github.com/Kong/kong
+- https://raw.githubusercontent.com/giantswarm/kong-app/v[[ .Version ]]/README.md
 version: [[ .Version ]]
-appVersion: 2.0.1
+appVersion: 2.0.4

@@ -1,5 +1,114 @@
 # Changelog
 
+## 1.5.0
+
+### Improvements
+
+* Added support for annotating the ServiceAccount.
+  ([#97](https://github.com/Kong/charts/pull/97))
+* Updated controller templates to use environment variables for default
+  configuration.
+  ([#99](https://github.com/Kong/charts/pull/99))
+* Added support for stream listens.
+  ([#103](https://github.com/Kong/charts/pull/103))
+* Moved migration configuration under a `migrations` block with support for
+  enabling upgrade jobs independently and adding annotations.
+  ([#102](https://github.com/Kong/charts/pull/102))
+* Added support for the [status listen](https://github.com/Kong/kong/pull/4977).
+  ([#107](https://github.com/Kong/charts/pull/107))
+* :warning: Exposed PodSecurityPolicy spec in values.yaml and added default
+  configuration to enforce a read-only root filesystem. **Kong Enterprise
+  versions prior to 1.5.0 require the root filesystem be read-write. If you use
+  an older version and enforce PodSecurityPolicy, you must set
+  `.Values.podSecurityPolicy.spec.readOnlyRootFilesystem: false`.**
+  ([#104](https://github.com/Kong/charts/pull/104))
+
+### Fixed
+
+* Fixed old init-migrations jobs blocking upgrades.
+  ([#102](https://github.com/Kong/charts/pull/102))
+
+### Documentation
+
+* Fixed discrepancy between image version in values.yaml and README.md.
+  ([#96](https://github.com/Kong/charts/pull/96))
+* Added example Enterprise image tags to values.yaml.
+  ([#100](https://github.com/Kong/charts/pull/100))
+* Added deprecation warnings in CHANGELOG.md.
+  ([#91](https://github.com/Kong/charts/pull/91))
+* Improved RBAC documentation to clarify process and use new controller
+  functionality.
+  ([#95](https://github.com/Kong/charts/pull/95))
+* Added documentation for managing multi-release clusters with varied node
+  roles (e.g. admin-only, Portal-only, etc.).
+  ([#102](https://github.com/Kong/charts/pull/102))
+
+## 1.4.1
+
+### Documentation
+
+* Fixed an issue with the 1.4.1 upgrade steps.
+
+## 1.4.0
+
+### Improvements
+
+* :warning: Service and listen configuration now use a unified configuration
+  format. **The previous configuration format for the admin API service is
+  deprecated and will be removed in a future release.** Listen configuration
+  now supports specifying parameters. Kubernetes service creation can now be
+  enabled or disabled for all Kong services. Users should review the
+  [1.4.0 upgrade guide](https://github.com/Kong/charts/blob/next/charts/kong/UPGRADE.md#changes-to-kong-service-configuration)
+  for details on how to update their values.yaml.
+  ([#72](https://github.com/Kong/charts/pull/72))
+* Updated the default controller version to 0.8. This adds new
+  KongClusterPlugin and TCPIngress CRDs and RBAC permissions for them. Users
+  should also note that `strip_path` now defaults to disabled, which will
+  likely break existing configuration. See [the controller
+  changelog](https://github.com/Kong/kubernetes-ingress-controller/blob/master/CHANGELOG.md#080---20200325)
+  and [upgrade-guide](https://github.com/Kong/charts/blob/next/charts/kong/UPGRADE.md#strip_path-now-defaults-to-false-for-controller-managed-routes)
+  for full details.
+  ([#77](https://github.com/Kong/charts/pull/77))
+* Added support for user-supplied ingress controller CLI arguments.
+  ([#79](https://github.com/Kong/charts/pull/79))
+* Added support for annotating the chart's deployment.
+  ([#81](https://github.com/Kong/charts/pull/81))
+* Switched to the Bitnami Postgres chart, as the chart in Helm's repository has
+  [moved
+  there](https://github.com/helm/charts/tree/master/stable/postgresql#this-helm-chart-is-deprecated).
+  ([#82](https://github.com/Kong/charts/pull/82))
+
+### Fixed
+
+* Corrected the app version in Chart.yaml.
+  ([#86](https://github.com/Kong/charts/pull/86))
+
+### Documentation
+
+* Fixed incorrect default value for `installCRDs`.
+  ([#78](https://github.com/Kong/charts/pull/78))
+* Added detailed upgrade guide covering breaking changes and deprecations.
+  ([#74](https://github.com/Kong/charts/pull/74))
+* Improved installation steps for Helm 2 and Helm 3.
+  ([#83](https://github.com/Kong/charts/pull/83))
+  ([#84](https://github.com/Kong/charts/pull/84))
+* Remove outdated `ingressController.replicaCount` setting.
+  ([#87](https://github.com/Kong/charts/pull/87))
+
+## 1.3.1
+
+### Fixed
+
+* Added missing newline to NOTES.txt template.
+  ([#66](https://github.com/Kong/charts/pull/66))
+
+### Documentation
+
+* Instruct users to create secrets for both the kong-enterprise-k8s and
+  kong-enterprise-edition Docker registries.
+  ([#65](https://github.com/Kong/charts/pull/65))
+* Updated maintainer information.
+
 ## 1.3.0
 
 ### Improvements
@@ -16,8 +125,13 @@
   ([#56](https://github.com/Kong/charts/pull/56))
 * Bumped default Kong version to 2.0 and controller version to 0.7.1.
   ([#60](https://github.com/Kong/charts/pull/60))
-* Removed dedicated Portal auth settings, which are unnecessary in modern
-  versions. ([#55](https://github.com/Kong/charts/pull/56))
+* :warning: Removed dedicated Portal auth settings, which are unnecessary in
+  modern versions. **The `enterprise.portal.portal_auth` and
+  `enterprise.portal.session_conf_secret` settings in values.yaml are
+  deprecated and will be removed in a future release.** See the [upgrade
+  guide](https://github.com/Kong/charts/blob/master/charts/kong/UPGRADE.md#removal-of-dedicated-portal-authentication-configuration-parameters)
+  for instructions on migrating them to environment variables.
+  ([#55](https://github.com/Kong/charts/pull/55))
 
 ### Fixed
 
