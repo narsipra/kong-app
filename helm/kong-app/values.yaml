@@ -34,7 +34,7 @@ env:
 image:
   repository: quay.io/giantswarm/kong
   # repository: kong-docker-kong-enterprise-k8s.bintray.io/kong-enterprise-k8s
-  # tag: "2.0.2.0-alpine"
+  # tag: "2.0.4.1-alpine"
   # kong-enterprise image
   # repository: kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition
   tag: 2.0.4
@@ -263,7 +263,7 @@ ingressController:
   enabled: true
   image:
     repository: quay.io/giantswarm/kong-ingress-controller
-    tag: 0.8.1
+    tag: 0.9.0
 
   # Specify Kong Ingress Controller configuration via environment variables
   env:
@@ -303,7 +303,7 @@ ingressController:
     # The annotations for service account
     annotations: {}
 
-  installCRDs: true
+  installCRDs: false
 
   # general properties
   livenessProbe:
@@ -404,6 +404,13 @@ livenessProbe:
   successThreshold: 1
   failureThreshold: 3
 
+# Proxy container lifecycle hooks
+# Ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
+lifecycle:
+  preStop:
+    exec:
+      command: ["/bin/sh", "-c", "/bin/sleep 15 && kong quit"]
+
 # Affinity for pod assignment
 # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 # affinity: {}
@@ -425,6 +432,9 @@ podAnnotations:
   giantswarm.io/monitoring-port: "9542"
   prometheus.io/scrape: "true"
   prometheus.io/port: "9542"
+
+# Labels to be added to Kong pods
+podLabels: {}
 
 # Kong pod count
 replicaCount: 1
@@ -484,8 +494,7 @@ podSecurityPolicy:
 priorityClassName: ""
 
 # securityContext for Kong pods.
-securityContext:
-  runAsUser: 1000
+securityContext: {}
 
 serviceMonitor:
   # Specifies whether ServiceMonitor for Prometheus operator should be created
@@ -535,6 +544,8 @@ enterprise:
     smtp_admin_emails: none@example.com
     smtp_host: smtp.example.com
     smtp_port: 587
+    smtp_auth_type: nil
+    smtp_ssl: nil
     smtp_starttls: true
     auth:
       # If your SMTP server does not require authentication, this section can
