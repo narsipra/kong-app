@@ -148,6 +148,23 @@ Note:
 > they won't be deleted by the Ingress Controller.
 (Taken from https://github.com/Kong/kubernetes-ingress-controller/blob/master/docs/faq.md#is-it-possible-to-create-consumers-using-the-admin-api)
 
+### Kong Ingress Controller CRDs
+If you wish to use the Kong Ingress Controller and use Helm 2, please be aware
+that by default the CRDs will not be installed. If you wish to add them at
+install time, please set the following:
+
+  - In values file
+    ```
+    ingressController:
+      installCRDs: true
+    ```
+  - On command line
+    ```
+    --set ingressController.installCRDs=true
+    ```
+
+This is not required for Helm 3, as CRDs will be installed automatically.
+
 ## Known Issues
 
 ## Credit
