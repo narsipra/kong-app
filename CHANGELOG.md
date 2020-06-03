@@ -7,19 +7,19 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
-## [v0.8.1]
+## [v0.8.1] - 2020-06-02
 
 - Sync with upstream - [v1.6.1](https://github.com/Kong/charts/blob/master/charts/kong/CHANGELOG.md#161)
 - Bump version of Kong Ingress Controller - [0.9.0](https://github.com/Kong/kubernetes-ingress-controller/blob/master/CHANGELOG.md#090---20200526)
 - `ingressController.installCRDs` default set to `false`
 
-## [v0.8.0]
+## [v0.8.0] - 2020-05-26
 
 - Sync with upstream - [v1.5.0](https://github.com/Kong/charts/blob/master/charts/kong/CHANGELOG.md#150)
 - Bump Kong version - [v2.0.4](https://github.com/Kong/kong/blob/master/CHANGELOG.md#204)
 - Bump Kong Ingress Controller version - [v0.8.1](https://github.com/Kong/kubernetes-ingress-controller/blob/master/CHANGELOG.md#081---20200415)
 
-## [v0.7.2]
+## [v0.7.2] - 2020-03-31
 
 ### Updated
  - Enable Giant Swarm monitoring
