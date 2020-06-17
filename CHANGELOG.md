@@ -7,11 +7,17 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
-## [v0.8.2] - 2020-06-17
+## [v0.8.3] - 2020-06-17
 
 ### Fixed
 
 - Fix template helpers issue converting port number for the webhook endpoint.
+
+## [v0.8.2] - 2020-06-02
+
+### Added
+
+- Added dates to CHANELOG entries.
 
 ## [v0.8.1] - 2020-06-02
 
@@ -165,3 +171,29 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Enable Kong Ingress Controller mode.
 - Use service of type Load Balancer for the Kong proxy service.
 - Disable using Postgres and use Kubernetes resources for storing state.
+
+[Unreleased]: https://github.com/giantswarm/kong-app/compare/v0.8.3...master
+[v0.8.3]: https://github.com/giantswarm/kong-app/compare/v0.8.2..v0.8.3
+[v0.8.2]: https://github.com/giantswarm/kong-app/compare/v0.8.1..v0.8.2
+[v0.8.1]: https://github.com/giantswarm/kong-app/compare/v0.8.0..v0.8.1
+[v0.8.0]: https://github.com/giantswarm/kong-app/compare/v0.7.2..v0.8.0
+[v0.7.2]: https://github.com/giantswarm/kong-app/compare/v0.7.1..v0.7.2
+[v0.7.1]: https://github.com/giantswarm/kong-app/compare/v0.7.0..v0.7.1
+[v0.7.0]: https://github.com/giantswarm/kong-app/compare/v0.6.2..v0.7.0
+[v0.6.2]: https://github.com/giantswarm/kong-app/compare/v0.6.1..v0.6.2
+[v0.6.1]: https://github.com/giantswarm/kong-app/compare/v0.6.0..v0.6.1
+[v0.6.0]: https://github.com/giantswarm/kong-app/compare/v0.5.3..v0.6.0
+[v0.5.3]: https://github.com/giantswarm/kong-app/compare/v0.5.2..v0.5.3
+[v0.5.2]: https://github.com/giantswarm/kong-app/compare/v0.5.1..v0.5.2
+[v0.5.1]: https://github.com/giantswarm/kong-app/compare/v0.5.0..v0.5.1
+[v0.5.0]: https://github.com/giantswarm/kong-app/compare/v0.4.6..v0.5.0
+[v0.4.6]: https://github.com/giantswarm/kong-app/compare/v0.4.5..v0.4.6
+[v0.4.5]: https://github.com/giantswarm/kong-app/compare/v0.4.4..v0.4.5
+[v0.4.4]: https://github.com/giantswarm/kong-app/compare/v0.4.3..v0.4.4
+[v0.4.3]: https://github.com/giantswarm/kong-app/compare/v0.4.2..v0.4.3
+[v0.4.2]: https://github.com/giantswarm/kong-app/compare/v0.4.1..v0.4.2
+[v0.4.1]: https://github.com/giantswarm/kong-app/compare/v0.4.0..v0.4.1
+[v0.4.0]: https://github.com/giantswarm/kong-app/compare/v0.3.0..v0.4.0
+[v0.3.0]: https://github.com/giantswarm/kong-app/compare/v0.2.0..v0.3.0
+[v0.2.0]: https://github.com/giantswarm/kong-app/compare/v0.1.0..v0.2.0
+[v0.1.0]: https://github.com/giantswarm/kong-app/releases/tag/v0.1.0
