@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Fixed
+
+- Force cast to string for Admission Webhook port [#59](https://github.com/giantswarm/kong-app/pull/59)
+
 ## [v0.8.3] - 2020-06-17
 
 ### Fixed

@@ -282,7 +282,7 @@ ingressController:
   admissionWebhook:
     enabled: false
     failurePolicy: Fail
-    port: 8080
+    port: "8080"
 
   # This has been changed from the default `kong`
   # as it allows this app to exist alongside other
