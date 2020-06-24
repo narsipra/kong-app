@@ -5,15 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project's packages adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [v0.8.4] - 2020-06-26
 
 ### Updated
 
 - Upgraded architect-orb to 0.10.0
+### Changed
 
+- Sync with upstream - [v1.7.0](https://github.com/Kong/charts/blob/master/charts/kong/CHANGELOG.md#170) 
+- Update architect-orb to 0.10.0
 ### Fixed
 
-- Force cast to string for Admission Webhook port [#59](https://github.com/giantswarm/kong-app/pull/59)
+- Uses fix from upstream-branch next to resolve issue "CONTROLLER_ADMISSION_WEBHOOK_LISTEN" which overwrites our fix below.
+    - Force cast to string for Admission Webhook port [#59](https://github.com/giantswarm/kong-app/pull/59)
 
 ## [v0.8.3] - 2020-06-17
 
@@ -26,6 +30,9 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 ### Added
 
 - Added dates to CHANELOG entries.
+
+### Info
+- Existing v0.8.2 git tag got updated by mistake in attempt to make next release. This changelog entry was added to avoid any confusion, even though change made in the release is not so much customer relevant.
 
 ## [v0.8.1] - 2020-06-02
 

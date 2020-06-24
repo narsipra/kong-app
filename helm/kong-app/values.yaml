@@ -44,15 +44,12 @@ env:
 
 # Specify Kong's Docker image and repository details here
 image:
-  repository: kong
-  tag: "2.0"
-  # kong-enterprise-k8s image (Kong OSS + Enterprise plugins)
+  repository: quay.io/giantswarm/kong
   # repository: kong-docker-kong-enterprise-k8s.bintray.io/kong-enterprise-k8s
   # tag: "2.0.4.1-alpine"
   # kong-enterprise image
   # repository: kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition
-  # tag: "1.5.0.2-alpine"
-
+  tag: 2.0.4
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -62,7 +59,13 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
-# Specify Kong admin API service and listener configuration
+waitImage:
+  repository: quay.io/giantswarm/busybox
+  tag: 1.31.0
+
+# Specify Kong admin service configuration
+# Note: It is recommended to not use the Admin API to configure Kong
+# when using Kong as an Ingress Controller.
 admin:
   # Enable creating a Kubernetes service for the admin API
   # Disabling this is recommended for most ingress controller configurations
@@ -271,9 +274,8 @@ dblessConfig:
 ingressController:
   enabled: true
   image:
-    repository: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
+    repository: quay.io/giantswarm/kong-ingress-controller
     tag: 0.9.0
-  args: []
 
   # Specify Kong Ingress Controller configuration via environment variables
   env:
@@ -292,9 +294,13 @@ ingressController:
   admissionWebhook:
     enabled: false
     failurePolicy: Fail
-    port: 8080
+    port: "8080"
 
-  ingressClass: kong
+  # This has been changed from the default `kong`
+  # as it allows this app to exist alongside other
+  # ingress controllers, such as nginx which is the
+  # default in the cluster.
+  ingressClass: kong-app
 
   rbac:
     # Specifies whether RBAC resources should be created
@@ -309,7 +315,7 @@ ingressController:
     # The annotations for service account
     annotations: {}
 
-  installCRDs: true
+  installCRDs: false
 
   # general properties
   livenessProbe:
@@ -332,14 +338,20 @@ ingressController:
     periodSeconds: 10
     successThreshold: 1
     failureThreshold: 3
-  resources: {}
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
 
 # -----------------------------------------------------------------------------
 # Postgres sub-chart parameters
 # -----------------------------------------------------------------------------
 
 # Kong can run without a database or use either Postgres or Cassandra
-# as a backend datatstore for it's configuration.
+# as a backend datatstore for its configuration.
 # By default, this chart installs Kong without a database.
 
 # If you would like to use a database, there are two options:
@@ -362,11 +374,6 @@ postgresql:
 # Miscellaneous parameters
 # -----------------------------------------------------------------------------
 
-waitImage:
-  repository: busybox
-  tag: latest
-  pullPolicy: IfNotPresent
-
 # update strategy
 updateStrategy: {}
   # type: RollingUpdate
@@ -376,13 +383,13 @@ updateStrategy: {}
 
 # If you want to specify resources, uncomment the following
 # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-resources: {}
-  # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
+resources:
+  limits:
+    cpu: 100m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 512Mi
 
 # readinessProbe for Kong pods
 # If using Kong Enterprise with RBAC, you must add a Kong-Admin-Token header
@@ -429,7 +436,14 @@ tolerations: []
 nodeSelector: {}
 
 # Annotation to be added to Kong pods
-podAnnotations: {}
+# Removing giantswarm.io annotations will result in Giant Swarm being unable to
+# monitor the deployment.
+podAnnotations:
+  giantswarm.io/monitoring: "true"
+  giantswarm.io/monitoring-path: metrics
+  giantswarm.io/monitoring-port: "9542"
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "9542"
 
 # Labels to be added to Kong pods
 podLabels: {}
@@ -464,7 +478,7 @@ podDisruptionBudget:
   maxUnavailable: "50%"
 
 podSecurityPolicy:
-  enabled: false
+  enabled: true
   spec:
     privileged: false
     fsGroup:
@@ -488,7 +502,6 @@ podSecurityPolicy:
     # Make the root filesystem read-only. This is not compatible with Kong Enterprise <1.5.
     # If you use Kong Enterprise <1.5, this must be set to false.
     readOnlyRootFilesystem: true
-
 
 priorityClassName: ""
 

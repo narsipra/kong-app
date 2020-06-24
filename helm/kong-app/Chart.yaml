@@ -1,14 +1,12 @@
 apiVersion: v1
-description: The Cloud-Native Ingress and API-management
+description: The Cloud-Native Ingress and
+  Service Mesh for APIs and Microservices
 engine: gotpl
-home: https://konghq.com/
+home: https://KongHQ.com/
 icon: https://s3.amazonaws.com/downloads.kong/universe/assets/icon-kong-inc-large.png
-maintainers:
-- name: hbagdi
-  email: harry@konghq.com
-- name: rainest
-  email: traines@konghq.com
-name: kong
+name: kong-app
 sources:
-version: 1.7.0
-appVersion: 2.0
+- https://github.com/Kong/kong
+- https://raw.githubusercontent.com/giantswarm/kong-app/v[[ .Version ]]/README.md
+version: [[ .Version ]]
+appVersion: 2.0.4

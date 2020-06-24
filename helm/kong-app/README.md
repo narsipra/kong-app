@@ -187,19 +187,19 @@ for more details.
 
 There are three different packages of Kong that are available:
 
-- **Kong Gateway**\
+- **Kong Gateway**
   This is the [Open-Source](https://github.com/kong/kong) offering. It is a
   full-blown API Gateway and Ingress solution with a wide-array of functionality.
   When Kong Gateway is combined with the Ingress based configuration method,
   you get Kong for Kubernetes. This is the default deployment for this Helm
   Chart.
-- **Kong Enterprise K8S**\
+- **Kong Enterprise K8S**
   This package builds up on top of the Open-Source Gateway and bundles in all
   the Enterprise-only plugins as well.
   When Kong Enterprise K8S is combined with the Ingress based
   configuration method, you get Kong for Kubernetes Enterprise.
   This package also comes with 24x7 support from Kong Inc.
-- **Kong Enterprise**\
+- **Kong Enterprise**
   This is the full-blown Enterprise package which packs with itself all the
   Enterprise functionality like Manager, Portal, Vitals, etc.
   This package can't be run in DB-less mode.
@@ -268,43 +268,22 @@ helm install admin-only -f shared-values.yaml -f only-admin.yaml kong/kong
 
 ### Standalone controller nodes
 
-The chart can deploy releases that contain the controller only, with no Kong
-container, by setting `deployment.kong.enabled: false` in values.yaml. There
-are several controller settings that must be populated manually in this
-scenario and several settings that are useful when using multiple controllers:
-
-* `ingressController.env.kong_admin_url` must be set to the Kong Admin API URL.
-  If the Admin API is exposed by a service in the cluster, this should look
-  something like `https://my-release-kong-admin.kong-namespace.svc:8444`
-* `ingressController.env.publish_service` must be set to the Kong proxy
-  service, e.g. `namespace/my-release-kong-proxy`.
-* `ingressController.ingressClass` should be set to a different value for each
-  instance of the controller.
-* `ingressController.env.admin_filter_tag` should be set to a different value
-  for each instance of the controller.
-* If using Kong Enterprise, `ingressController.env.kong_workspace` can
-  optionally create configuration in a workspace other than `default`.
-
-Standalone controllers require a database-backed Kong instance, as DB-less mode
-requires that a single controller generate a complete Kong configuration.
-
-### CRDs only
-
-For Helm 2 installations, CRDs are managed as part of a release, and are
-deleted if the release is. This can cause issues for clusters with multiple
-Kong installations, as one release must remain in place for the rest to
-function. To avoid this, you can create a CRD-only release by setting
-`deployment.kong.enabled: false` and `ingressController.enabled: false`.
-
-On Helm 3, CRDs are created if necessary, but are not managed along with the
-release. Releases can be deleted without affecting CRDs; CRDs are only removed
-if you delete them manually.
-
-### Example configurations
-
-Several example values.yaml are available in the
-[example-values](https://github.com/Kong/charts/blob/master/charts/kong/example-values/)
-directory.
+Kong can be configured via two methods:
+- **Ingress and CRDs**
+  The configuration for Kong is done via `kubectl` and Kubernetes-native APIs.
+  This is also known as Kong Ingress Controller or Kong for Kubernetes and is
+  the default deployment pattern for this Helm Chart. The configuration
+  for Kong is managed via Ingress and a few
+  [Custom Resources](https://github.com/Kong/kubernetes-ingress-controller/blob/master/docs/concepts/custom-resources.md).
+  For more details, please read the
+  [documentation](https://github.com/Kong/kubernetes-ingress-controller/tree/master/docs)
+  on Kong Ingress Controller.
+  To configure and fine-tune the controller, please read the
+  [Ingress Controller Parameters](#ingress-controller-parameters) section.
+- **Admin API**
+  This is the traditional method of running and configuring Kong.
+  By default, the Admin API of Kong is not exposed as a Service. This
+  can be controlled via `admin.enabled` and `env.admin_listen` parameters.
 
 ## Configuration
 
@@ -404,9 +383,9 @@ section of `values.yaml` file:
 | image.tag                          | Version of the ingress controller                                                     | 0.9.0                                                                        |
 | readinessProbe                     | Kong ingress controllers readiness probe                                              |                                                                              |
 | livenessProbe                      | Kong ingress controllers liveness probe                                               |                                                                              |
-| installCRDs                        | Create CRDs. **FOR HELM3, MAKE SURE THIS VALUE IS SET TO `false`.**  Regardless of value of this, Helm v3+ will install the CRDs if those are not present already. Use `--skip-crds` with `helm install` if you want to skip CRD creation.                 | true                                                                         |
-| serviceAccount.create              | Create Service Account for ingress controller                                         | true
-| serviceAccount.name                | Use existing Service Account, specify its name                                        | ""
+| installCRDs                        | Create CRDs. **FOR HELM3, MAKE SURE THIS VALUE IS SET TO `false`.**  Regardless of value of this, Helm v3+ will install the CRDs if those are not present already. Use `--skip-crds` with `helm install` if you want to skip CRD creation.| false |
+| serviceAccount.create              | Create Service Account for IngresController                                           | true
+| serviceAccount.name                | Use existing Service Account, specifiy it's name                                      | ""
 | serviceAccount.annotations         | Annotations for Service Account                                                       | {}
 | env                                | Specify Kong Ingress Controller configuration via environment variables               |                                                                              |
 | ingressClass                       | The ingress-class value for controller                                                | kong                                                                         |
