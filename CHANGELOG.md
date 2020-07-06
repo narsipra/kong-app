@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Updated
+
+- Upgraded architect-orb to 0.10.0
+
 ### Fixed
 
 - Force cast to string for Admission Webhook port [#59](https://github.com/giantswarm/kong-app/pull/59)
@@ -38,20 +42,23 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 ## [v0.7.2] - 2020-03-31
 
 ### Updated
- - Enable Giant Swarm monitoring
- - Set default `ingressClass` to `kong-app`. See #48
+
+- Enable Giant Swarm monitoring
+- Set default `ingressClass` to `kong-app`. See #48
 
 ## [v0.7.1]
 
 ### Updated
- - Fix chart `apiVersion`
+
+- Fix chart `apiVersion`
 
 ## [v0.7.0]
 
 ### Updated
- - Sync with upstream [v1.3.0](https://github.com/Kong/charts/blob/master/charts/kong/CHANGELOG.md#130)
- - Kong version bumped to 2.0.1
- - Kong Ingress controller bumped to 0.7.1
+
+- Sync with upstream [v1.3.0](https://github.com/Kong/charts/blob/master/charts/kong/CHANGELOG.md#130)
+- Kong version bumped to 2.0.1
+- Kong Ingress controller bumped to 0.7.1
 
 ## [v0.6.2]
 
@@ -67,76 +74,76 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [v0.6.0]
 
-## Updated
+### Updated
 
 - Pull upstream v1.1.1
 
-## Fix
+### Fixed
 
 - Issue #38 : Migration init job hangs when using your own DB
 - PR #40 : Fix Helm upgrade failing
 
 ## [v0.5.3]
 
-## Updated
+### Updated
 
 - Pull in changes from upstream v1.0.1
 
 ## [v0.5.2]
 
-## Updated
+### Updated
 
 - Bump Kong version, 1.4.3 contains [security - fix](https://github.com/Kong/kong/blob/master/CHANGELOG.md#143)
 
 ## [v0.5.1]
 
-## Changed
+### Changed
 
 - Remove `registry` from values
 
 ## [v0.5.0]
 
-## Changed
+### Changed
 
 - Update the chart to latest [upstream version 1.0.0](https://github.com/Kong/charts) (#043c2c2)
 
-## Updated
+### Updated
 
 - README contains some more information
 
 ## [v0.4.6]
 
-## Added
+### Added
 
 - Bump versions (#31), Fix giantswarm/kong-app/issues/29
 
 ## [v0.4.5]
 
-## Added
+### Added
 
 - Add support for plugins which require multiple configmaps.
 
 ## [v0.4.4]
 
-## Removed
+### Removed
 
 - Remove the stale custom plugin configmap.
 
 ## [v0.4.3]
 
-## Added
+### Added
 
 - Add Postgres user and database name as environment variables in the proper templates.
 
 ## [v0.4.2]
 
-## Changed
+### Changed
 
 - Change wait container image for kong to init properly DB deployment
 
 ## [v0.4.1]
 
-## Changed
+### Changed
 
 - Add registry in all wait images entries to make it deployable in all regions
 - Use a fixed busybox version for wait images to make it deterministic
