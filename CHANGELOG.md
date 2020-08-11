@@ -8,12 +8,33 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 ## [Unreleased]
 
 ### Updated
-
+ 
 - Upgraded architect-orb to 0.10.0
+- Add github workflows for release automation
+- Sync with upstream chart [v1.8.0](https://github.com/Kong/charts/tree/kong-1.8.0)
+- Update busybox 1.31.0 -> 1.32.0
+
+### Improvements
+From upstream CHANGELOG:
+>* Update default Kong version to 2.1.
+>* Update Kong Enterprise images to 1.5.0.4 (kong-enterprise-edition) and
+>  2.0.4.2 (kong-enterprise-k8s).
+>* Updated default controller version to 0.9.1.
+>  ([#150](https://github.com/Kong/charts/pull/150))
+>* Added support for ServiceMonitor targetLabels (for use with the Prometheus
+>  Operator).
+>  ([#162](https://github.com/Kong/charts/pull/162))
+>* Automatically handle the [new port_maps
+>  setting](https://github.com/Kong/kong/pull/5861) for the proxy service.
+>  ([#169](https://github.com/Kong/charts/pull/169))
+>* Add support for [hybrid mode
+>  deployments](https://docs.konghq.com/latest/hybrid-mode/).
+>  ([#160](https://github.com/Kong/charts/pull/160))
 
 ### Fixed
 
-- Force cast to string for Admission Webhook port [#59](https://github.com/giantswarm/kong-app/pull/59)
+- Uses fix from upstream-branch next to resolve issue "CONTROLLER_ADMISSION_WEBHOOK_LISTEN" which overwrites our fix below.
+    - Force cast to string for Admission Webhook port [#59](https://github.com/giantswarm/kong-app/pull/59)
 
 ## [v0.8.3] - 2020-06-17
 
@@ -26,6 +47,9 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 ### Added
 
 - Added dates to CHANELOG entries.
+
+### Info
+- Existing v0.8.2 git tag got updated by mistake in attempt to make next release. This changelog entry was added to avoid any confusion, even though change made in the release is not so much customer relevant.
 
 ## [v0.8.1] - 2020-06-02
 

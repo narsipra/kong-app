@@ -2,6 +2,7 @@
 # Declare variables to be passed into your templates.
 #
 # Sections:
+# - Deployment parameters
 # - Kong parameters
 # - Ingress Controller parameters
 # - Postgres sub-chart parameters
@@ -9,11 +10,25 @@
 # - Kong Enterprise parameters
 
 # -----------------------------------------------------------------------------
+# Deployment parameters
+# -----------------------------------------------------------------------------
+
+deployment:
+  kong:
+    # Enable or disable Kong itself
+    # Setting this to false with ingressController.enabled=true will create a
+    # controller-only release.
+    enabled: true
+
+# -----------------------------------------------------------------------------
 # Kong parameters
 # -----------------------------------------------------------------------------
 
-# Specify Kong configurations
-# Kong configurations guide https://docs.konghq.com/latest/configuration
+# Specify Kong configuration
+# This chart takes all entries defined under `.env` and transforms them into into `KONG_*`
+# environment variables for Kong containers.
+# Their names here should match the names used in https://github.com/Kong/kong/blob/master/kong.conf.default
+# See https://docs.konghq.com/latest/configuration also for additional details
 # Values here take precedence over values from other sections of values.yaml,
 # e.g. setting pg_user here will override the value normally set when postgresql.enabled
 # is set below. In general, you should not set values here if they are set elsewhere.
@@ -33,11 +48,14 @@ env:
 # Specify Kong's Docker image and repository details here
 image:
   repository: quay.io/giantswarm/kong
+  tag: "2.1"
+  # kong-enterprise-k8s image (Kong OSS + Enterprise plugins)
   # repository: kong-docker-kong-enterprise-k8s.bintray.io/kong-enterprise-k8s
-  # tag: "2.0.4.1-alpine"
+  # tag: "2.0.4.2-alpine"
   # kong-enterprise image
   # repository: kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition
-  tag: 2.0.4
+  # tag: "1.5.0.4-alpine"
+
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -47,11 +65,7 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
-waitImage:
-  repository: quay.io/giantswarm/busybox
-  tag: 1.31.0
-
-# Specify Kong admin service configuration
+# Specify Kong admin API service and listener configuration
 # Note: It is recommended to not use the Admin API to configure Kong
 # when using Kong as an Ingress Controller.
 admin:
@@ -118,7 +132,34 @@ status:
     enabled: false
     containerPort: 8543
 
-# Specify Kong proxy service and listener configuration
+# Specify Kong cluster service and listener configuration
+#
+# The cluster service *must* use TLS. It does not support the "http" block
+# available on other services.
+#
+# The cluster service cannot be exposed through an Ingress, as it must perform
+# TLS client validation directly and is not compatible with TLS-terminating
+# proxies. If you need to expose it externally, you must use "type:
+# LoadBalancer" and use a TCP-only load balancer (check your Kubernetes
+# provider's documentation, as the configuration required for this varies).
+cluster:
+  enabled: false
+  # If you want to specify annotations for the cluster service, uncomment the following
+  # line, add additional or adjust as needed, and remove the curly braces after 'annotations:'.
+  annotations: {}
+  #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+
+  tls:
+    enabled: false
+    servicePort: 8005
+    containerPort: 8005
+    parameters: []
+
+  type: ClusterIP
+
+  externalIPs: []
+
+# Specify Kong proxy service configuration
 proxy:
   # Enable creating a Kubernetes service for the proxy
   enabled: true
@@ -263,7 +304,7 @@ ingressController:
   enabled: true
   image:
     repository: quay.io/giantswarm/kong-ingress-controller
-    tag: 0.9.0
+    tag: 0.9.1
 
   # Specify Kong Ingress Controller configuration via environment variables
   env:
@@ -339,7 +380,7 @@ ingressController:
 # -----------------------------------------------------------------------------
 
 # Kong can run without a database or use either Postgres or Cassandra
-# as a backend datatstore for it's configuration.
+# as a backend datatstore for its configuration.
 # By default, this chart installs Kong without a database.
 
 # If you would like to use a database, there are two options:
@@ -361,6 +402,11 @@ postgresql:
 # -----------------------------------------------------------------------------
 # Miscellaneous parameters
 # -----------------------------------------------------------------------------
+
+waitImage:
+  repository: quay.io/giantswarm/busybox
+  tag: 1.32.0
+  pullPolicy: IfNotPresent
 
 # update strategy
 updateStrategy: {}
@@ -504,6 +550,8 @@ serviceMonitor:
   # namespace: monitoring
   # labels:
   #   foo: bar
+  # targetLabels:
+  #   - foo
 
 # -----------------------------------------------------------------------------
 # Kong Enterprise parameters
@@ -517,7 +565,7 @@ enterprise:
   # Kong Enterprise license secret name
   # This secret must contain a single 'license' key, containing your base64-encoded license data
   # The license secret is required for all Kong Enterprise deployments
-  license_secret: you-must-create-a-kong-license-secret
+  license_secret: kong-enterprise-license
   vitals:
     enabled: true
   portal:
@@ -528,10 +576,10 @@ enterprise:
     # If RBAC is enabled, this Secret must contain an admin_gui_session_conf key
     # The key value must be a secret configuration, following the example at
     # https://docs.konghq.com/enterprise/latest/kong-manager/authentication/sessions
-    session_conf_secret: you-must-create-an-rbac-session-conf-secret
+    session_conf_secret: kong-session-config
     # If admin_gui_auth is not set to basic-auth, provide a secret name which
     # has an admin_gui_auth_conf key containing the plugin config JSON
-    admin_gui_auth_conf_secret: you-must-create-an-admin-gui-auth-conf-secret
+    admin_gui_auth_conf_secret: CHANGEME-admin-gui-auth-conf-secret
   # For configuring emails and SMTP, please read through:
   # https://docs.konghq.com/enterprise/latest/developer-portal/configuration/smtp
   # https://docs.konghq.com/enterprise/latest/kong-manager/networking/email
@@ -553,7 +601,7 @@ enterprise:
       # string, you must create a Secret with an smtp_password key containing
       # your SMTP password and specify its name here.
       smtp_username: ''  # e.g. postmaster@example.com
-      smtp_password_secret: you-must-create-an-smtp-password
+      smtp_password_secret: CHANGEME-smtp-password
 
 manager:
   # Enable creating a Kubernetes service for Kong Manager
