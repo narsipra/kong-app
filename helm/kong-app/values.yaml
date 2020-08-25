@@ -1,4 +1,5 @@
 ---
+  
 # -----------------------------------------------------------------------------
 # Default values for Kong's Helm Chart.
 # Declare variables to be passed into your templates.
@@ -200,8 +201,7 @@ proxy:
   # To enable, remove "{}", uncomment the section below, and select your desired
   # ports and parameters. Listens are dynamically named after their servicePort,
   # e.g. "stream-9000" for the below.
-  stream:
-    {}
+  stream: {}
     #   # Set the container (internal) and service (external) ports for this listen.
     #   # These values should normally be the same. If your environment requires they
     #   # differ, note that Kong will match routes based on the containerPort only.
@@ -246,8 +246,7 @@ proxy:
 # Subdirectories (which are optional) require separate ConfigMaps/Secrets.
 # "path" indicates their directory under the main plugin directory: the example
 # below will mount the contents of kong-plugin-rewriter-migrations at "/opt/kong/rewriter/migrations".
-plugins:
-  {}
+plugins: {}
   # configMaps:
   # - pluginName: rewriter
   #   name: kong-plugin-rewriter
@@ -414,8 +413,7 @@ waitImage:
   pullPolicy: IfNotPresent
 
 # update strategy
-updateStrategy:
-  {}
+updateStrategy: {}
   # type: RollingUpdate
   # rollingUpdate:
   #   maxSurge: "100%"
@@ -532,9 +530,9 @@ podSecurityPolicy:
     supplementalGroups:
       rule: RunAsAny
     volumes:
-      - "configMap"
-      - "secret"
-      - "emptyDir"
+      - 'configMap'
+      - 'secret'
+      - 'emptyDir'
     allowPrivilegeEscalation: false
     hostNetwork: false
     hostIPC: false
@@ -606,7 +604,7 @@ enterprise:
       # be left as-is. If smtp_username is set to anything other than an empty
       # string, you must create a Secret with an smtp_password key containing
       # your SMTP password and specify its name here.
-      smtp_username: ""  # e.g. postmaster@example.com
+      smtp_username: ''  # e.g. postmaster@example.com
       smtp_password_secret: CHANGEME-smtp-password
 
 manager:
