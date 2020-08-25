@@ -14,7 +14,7 @@ hybrid mode.
 
 ### Improvements
 
-* Update default Kong version to 2.1.
+* Update default Kong version to 2.1.3
 * Update Kong Enterprise images to 1.5.0.4 (kong-enterprise-edition) and
   2.0.4.2 (kong-enterprise-k8s).
 * Updated default controller version to 0.9.1.
