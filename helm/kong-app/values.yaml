@@ -1,3 +1,5 @@
+--- # -----------------------------------------------------------------------------
+
 # Default values for Kong's Helm Chart.
 # Declare variables to be passed into your templates.
 #
@@ -47,7 +49,8 @@ env:
 
 # Specify Kong's Docker image and repository details here
 image:
-  repository: quay.io/giantswarm/kong
+  registry: quay.io
+  repository: giantswarm/kong
   tag: "2.1"
   # kong-enterprise-k8s image (Kong OSS + Enterprise plugins)
   # repository: kong-docker-kong-enterprise-k8s.bintray.io/kong-enterprise-k8s
@@ -303,7 +306,8 @@ dblessConfig:
 ingressController:
   enabled: true
   image:
-    repository: quay.io/giantswarm/kong-ingress-controller
+    registry: quay.io
+    repository: giantswarm/kong-ingress-controller
     tag: 0.9.1
 
   # Specify Kong Ingress Controller configuration via environment variables
@@ -404,7 +408,8 @@ postgresql:
 # -----------------------------------------------------------------------------
 
 waitImage:
-  repository: quay.io/giantswarm/busybox
+  registry: quay.io
+  repository: giantswarm/busybox
   tag: 1.32.0
   pullPolicy: IfNotPresent
 
