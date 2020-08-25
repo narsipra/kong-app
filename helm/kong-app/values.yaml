@@ -1,5 +1,5 @@
---- # -----------------------------------------------------------------------------
-
+---
+# -----------------------------------------------------------------------------
 # Default values for Kong's Helm Chart.
 # Declare variables to be passed into your templates.
 #
@@ -606,7 +606,7 @@ enterprise:
       # be left as-is. If smtp_username is set to anything other than an empty
       # string, you must create a Secret with an smtp_password key containing
       # your SMTP password and specify its name here.
-      smtp_username: '' # e.g. postmaster@example.com
+      smtp_username: ''  # e.g. postmaster@example.com
       smtp_password_secret: CHANGEME-smtp-password
 
 manager:
