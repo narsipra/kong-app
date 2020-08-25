@@ -69,7 +69,7 @@ spec:
         {{- if .Values.image.unifiedRepoTag }}
         image: "{{ .Values.image.unifiedRepoTag }}"
         {{- else }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         {{- end }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:

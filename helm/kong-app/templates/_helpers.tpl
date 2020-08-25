@@ -346,7 +346,7 @@ The name of the service used for the ingress controller's validation webhook
 {{- if .Values.image.unifiedRepoTag }}
   image: "{{ .Values.image.unifiedRepoTag }}"
 {{- else }}
-  image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+  image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
 {{- end }}
   imagePullPolicy: {{ .Values.image.pullPolicy }}
   env:
@@ -380,7 +380,7 @@ The name of the service used for the ingress controller's validation webhook
 {{- if .Values.ingressController.image.unifiedRepoTag }}
   image: "{{ .Values.ingressController.image.unifiedRepoTag }}"
 {{- else }}
-  image: "{{ .Values.ingressController.image.repository }}:{{ .Values.ingressController.image.tag }}"
+  image: "{{ .Values.image.registry }}/{{ .Values.ingressController.image.repository }}:{{ .Values.ingressController.image.tag }}"
 {{- end }}
   imagePullPolicy: {{ .Values.image.pullPolicy }}
   readinessProbe:
@@ -618,7 +618,7 @@ Environment variables are sorted alphabetically
 {{- if .Values.waitImage.unifiedRepoTag }}
   image: "{{ .Values.waitImage.unifiedRepoTag }}"
 {{- else }}
-  image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
+  image: "{{ .Values.image.registry }}/{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
 {{- end }}
   imagePullPolicy: {{ .Values.waitImage.pullPolicy }}
   env:
