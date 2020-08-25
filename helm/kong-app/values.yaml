@@ -35,8 +35,8 @@ deployment:
 # e.g. setting pg_user here will override the value normally set when postgresql.enabled
 # is set below. In general, you should not set values here if they are set elsewhere.
 env:
-  database: "off"
-  nginx_worker_processes: "1"
+  database: 'off'
+  nginx_worker_processes: '1'
   proxy_access_log: /dev/stdout
   admin_access_log: /dev/stdout
   admin_gui_access_log: /dev/stdout
@@ -51,7 +51,7 @@ env:
 image:
   registry: quay.io
   repository: giantswarm/kong
-  tag: "2.1"
+  tag: '2.1'
   # kong-enterprise-k8s image (Kong OSS + Enterprise plugins)
   # repository: kong-docker-kong-enterprise-k8s.bintray.io/kong-enterprise-k8s
   # tag: "2.0.4.2-alpine"
@@ -105,7 +105,7 @@ admin:
     # nodePort: 32443
     # Additional listen parameters, e.g. "reuseport", "backlog=16384"
     parameters:
-    - http2
+      - http2
 
   # Kong admin ingress settings. Useful if you want to expose the Admin
   # API of Kong outside the k8s cluster.
@@ -194,13 +194,14 @@ proxy:
     # nodePort: 32443
     # Additional listen parameters, e.g. "reuseport", "backlog=16384"
     parameters:
-    - http2
+      - http2
 
   # Define stream (TCP) listen
   # To enable, remove "{}", uncomment the section below, and select your desired
   # ports and parameters. Listens are dynamically named after their servicePort,
   # e.g. "stream-9000" for the below.
-  stream: {}
+  stream:
+    {}
     #   # Set the container (internal) and service (external) ports for this listen.
     #   # These values should normally be the same. If your environment requires they
     #   # differ, note that Kong will match routes based on the containerPort only.
@@ -245,7 +246,8 @@ proxy:
 # Subdirectories (which are optional) require separate ConfigMaps/Secrets.
 # "path" indicates their directory under the main plugin directory: the example
 # below will mount the contents of kong-plugin-rewriter-migrations at "/opt/kong/rewriter/migrations".
-plugins: {}
+plugins:
+  {}
   # configMaps:
   # - pluginName: rewriter
   #   name: kong-plugin-rewriter
@@ -276,17 +278,17 @@ migrations:
   # as the sidecar containers do not terminate and prevent the jobs from completing
   annotations:
     sidecar.istio.io/inject: false
-    kuma.io/sidecar-injection: "disabled"
+    kuma.io/sidecar-injection: 'disabled'
 
 # Kong's configuration for DB-less mode
 # Note: Use this section only if you are deploying Kong in DB-less mode
 # and not as an Ingress Controller.
 dblessConfig:
   # Either Kong's configuration is managed from an existing ConfigMap (with Key: kong.yml)
-  configMap: ""
+  configMap: ''
   # Or the configuration is passed in full-text below
   config:
-    _format_version: "1.1"
+    _format_version: '1.1'
     services:
       # Example configuration
       # - name: example.com
@@ -306,7 +308,6 @@ dblessConfig:
 ingressController:
   enabled: true
   image:
-    registry: quay.io
     repository: giantswarm/kong-ingress-controller
     tag: 0.9.1
 
@@ -327,7 +328,7 @@ ingressController:
   admissionWebhook:
     enabled: false
     failurePolicy: Fail
-    port: "8080"
+    port: '8080'
 
   # This has been changed from the default `kong`
   # as it allows this app to exist alongside other
@@ -353,7 +354,7 @@ ingressController:
   # general properties
   livenessProbe:
     httpGet:
-      path: "/healthz"
+      path: '/healthz'
       port: 10254
       scheme: HTTP
     initialDelaySeconds: 5
@@ -363,7 +364,7 @@ ingressController:
     failureThreshold: 3
   readinessProbe:
     httpGet:
-      path: "/healthz"
+      path: '/healthz'
       port: 10254
       scheme: HTTP
     initialDelaySeconds: 5
@@ -408,13 +409,13 @@ postgresql:
 # -----------------------------------------------------------------------------
 
 waitImage:
-  registry: quay.io
   repository: giantswarm/busybox
   tag: 1.32.0
   pullPolicy: IfNotPresent
 
 # update strategy
-updateStrategy: {}
+updateStrategy:
+  {}
   # type: RollingUpdate
   # rollingUpdate:
   #   maxSurge: "100%"
@@ -434,7 +435,7 @@ resources:
 # If using Kong Enterprise with RBAC, you must add a Kong-Admin-Token header
 readinessProbe:
   httpGet:
-    path: "/status"
+    path: '/status'
     port: metrics
     scheme: HTTP
   initialDelaySeconds: 5
@@ -446,7 +447,7 @@ readinessProbe:
 # livenessProbe for Kong pods
 livenessProbe:
   httpGet:
-    path: "/status"
+    path: '/status'
     port: metrics
     scheme: HTTP
   initialDelaySeconds: 5
@@ -460,7 +461,7 @@ livenessProbe:
 lifecycle:
   preStop:
     exec:
-      command: ["/bin/sh", "-c", "/bin/sleep 15 && kong quit"]
+      command: ['/bin/sh', '-c', '/bin/sleep 15 && kong quit']
 
 # Affinity for pod assignment
 # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
@@ -478,11 +479,11 @@ nodeSelector: {}
 # Removing giantswarm.io annotations will result in Giant Swarm being unable to
 # monitor the deployment.
 podAnnotations:
-  giantswarm.io/monitoring: "true"
+  giantswarm.io/monitoring: 'true'
   giantswarm.io/monitoring-path: metrics
-  giantswarm.io/monitoring-port: "9542"
-  prometheus.io/scrape: "true"
-  prometheus.io/port: "9542"
+  giantswarm.io/monitoring-port: '9542'
+  prometheus.io/scrape: 'true'
+  prometheus.io/port: '9542'
 
 # Labels to be added to Kong pods
 podLabels: {}
@@ -493,7 +494,7 @@ replicaCount: 1
 # Annotations to be added to Kong deployment
 deploymentAnnotations:
   kuma.io/gateway: enabled
-  traffic.sidecar.istio.io/includeInboundPorts: ""
+  traffic.sidecar.istio.io/includeInboundPorts: ''
 
 # Enable autoscaling using HorizontalPodAutoscaler
 autoscaling:
@@ -514,7 +515,7 @@ autoscaling:
 # Kong Pod Disruption Budget
 podDisruptionBudget:
   enabled: false
-  maxUnavailable: "50%"
+  maxUnavailable: '50%'
 
 podSecurityPolicy:
   enabled: true
@@ -542,7 +543,7 @@ podSecurityPolicy:
     # If you use Kong Enterprise <1.5, this must be set to false.
     readOnlyRootFilesystem: true
 
-priorityClassName: ""
+priorityClassName: ''
 
 # securityContext for Kong pods.
 securityContext: {}
@@ -605,7 +606,7 @@ enterprise:
       # be left as-is. If smtp_username is set to anything other than an empty
       # string, you must create a Secret with an smtp_password key containing
       # your SMTP password and specify its name here.
-      smtp_username: ''  # e.g. postmaster@example.com
+      smtp_username: '' # e.g. postmaster@example.com
       smtp_password_secret: CHANGEME-smtp-password
 
 manager:
@@ -636,7 +637,7 @@ manager:
     # nodePort: 32443
     # Additional listen parameters, e.g. "reuseport", "backlog=16384"
     parameters:
-    - http2
+      - http2
 
   ingress:
     # Enable/disable exposure using ingress.
@@ -680,7 +681,7 @@ portal:
     # nodePort: 32443
     # Additional listen parameters, e.g. "reuseport", "backlog=16384"
     parameters:
-    - http2
+      - http2
 
   ingress:
     # Enable/disable exposure using ingress.
@@ -724,7 +725,7 @@ portalapi:
     # nodePort: 32443
     # Additional listen parameters, e.g. "reuseport", "backlog=16384"
     parameters:
-    - http2
+      - http2
 
   ingress:
     # Enable/disable exposure using ingress.
