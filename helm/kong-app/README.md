@@ -127,7 +127,7 @@ installing the chart:
 
 - Set `enterprise.enabled` to `true` in `values.yaml` file.
 - Update values.yaml to use a Kong Enterprise image.
-- Satisfy the two prerequsisites below for
+- Satisfy the two  prerequsisites below for
   [Enterprise License](#kong-enterprise-license) and
   [Enterprise Docker Registry](#kong-enterprise-docker-registry-access).
 - (Optional) [set a `password` environment variable](#rbac) to create the
@@ -169,11 +169,11 @@ Furthermore, this chart allows you to bring your own database that you manage
 or spin up a new Postgres instance using the `postgres.enabled` parameter.
 
 > Cassandra deployment via a sub-chart was previously supported but
-> the support has now been dropped due to stability issues.
-> You can still deploy Cassandra on your own and configure Kong to use
-> that via the `env.database` parameter.
+the support has now been dropped due to stability issues.
+You can still deploy Cassandra on your own and configure Kong to use
+that via the `env.database` parameter.
 
-#### DB-less deployment
+#### DB-less  deployment
 
 When deploying Kong in DB-less mode(`env.database: "off"`)
 and without the Ingress Controller(`ingressController.enabled: false`),
@@ -212,7 +212,6 @@ the [Kong Enterprise Parameters](#kong-enterprise-parameters) section.
 ### Configuration method
 
 Kong can be configured via two methods:
-
 - **Ingress and CRDs**\
   The configuration for Kong is done via `kubectl` and Kubernetes-native APIs.
   This is also known as Kong Ingress Controller or Kong for Kubernetes and is
@@ -231,12 +230,12 @@ Kong can be configured via two methods:
 
 ### Separate admin and proxy nodes
 
-_Note: although this section is titled "Separate admin and proxy nodes", this
+*Note: although this section is titled "Separate admin and proxy nodes", this
 split release technique is generally applicable to any deployment with
 different types of Kong nodes. Separating Admin API and proxy nodes is one of
 the more common use cases for splitting across multiple releases, but you can
 also split releases for hybrid mode CP/DP nodes, split proxy and Developer
-Portal nodes, etc._
+Portal nodes, etc.*
 
 Users may wish to split their Kong deployment into multiple instances that only
 run some of Kong's services (i.e. you run `helm install` once for every
@@ -250,10 +249,13 @@ The standard chart upgrade automation process assumes that there is only a
 single Kong release in the Kong cluster, and runs both `migrations up` and
 `migrations finish` jobs. To handle clusters split across multiple releases,
 you should:
-
-1. Upgrade one of the releases with `helm upgrade RELEASENAME -f values.yaml --set migrations.preUpgrade=true --set migrations.postUpgrade=false`.
-2. Upgrade all but one of the remaining releases with `helm upgrade RELEASENAME -f values.yaml --set migrations.preUpgrade=false --set migrations.postUpgrade=false`.
-3. Upgrade the final release with `helm upgrade RELEASENAME -f values.yaml --set migrations.preUpgrade=false --set migrations.postUpgrade=true`.
+1. Upgrade one of the releases with `helm upgrade RELEASENAME -f values.yaml
+   --set migrations.preUpgrade=true --set migrations.postUpgrade=false`.
+2. Upgrade all but one of the remaining releases with `helm upgrade RELEASENAME
+   -f values.yaml --set migrations.preUpgrade=false --set
+   migrations.postUpgrade=false`.
+3. Upgrade the final release with `helm upgrade RELEASENAME -f values.yaml
+   --set migrations.preUpgrade=false --set migrations.postUpgrade=true`.
 
 This ensures that all instances are using the new Kong package before running
 `kong migrations finish`.
@@ -277,16 +279,16 @@ container, by setting `deployment.kong.enabled: false` in values.yaml. There
 are several controller settings that must be populated manually in this
 scenario and several settings that are useful when using multiple controllers:
 
-- `ingressController.env.kong_admin_url` must be set to the Kong Admin API URL.
+* `ingressController.env.kong_admin_url` must be set to the Kong Admin API URL.
   If the Admin API is exposed by a service in the cluster, this should look
   something like `https://my-release-kong-admin.kong-namespace.svc:8444`
-- `ingressController.env.publish_service` must be set to the Kong proxy
+* `ingressController.env.publish_service` must be set to the Kong proxy
   service, e.g. `namespace/my-release-kong-proxy`.
-- `ingressController.ingressClass` should be set to a different value for each
+* `ingressController.ingressClass` should be set to a different value for each
   instance of the controller.
-- `ingressController.env.admin_filter_tag` should be set to a different value
+* `ingressController.env.admin_filter_tag` should be set to a different value
   for each instance of the controller.
-- If using Kong Enterprise, `ingressController.env.kong_workspace` can
+* If using Kong Enterprise, `ingressController.env.kong_workspace` can
   optionally create configuration in a workspace other than `default`.
 
 Standalone controllers require a database-backed Kong instance, as DB-less mode
@@ -314,7 +316,8 @@ certificate and key pair](#certificates) for intra-cluster communication.
 #### Certificates
 
 Hybrid mode uses TLS to secure the CP/DP node communication channel, and
-requires certificates for it. You can generate these either using `kong hybrid gen_cert` on a local Kong installation or using OpenSSL:
+requires certificates for it. You can generate these either using `kong hybrid
+gen_cert` on a local Kong installation or using OpenSSL:
 
 ```bash
 openssl req -new -x509 -nodes -newkey ec:<(openssl ecparam -name secp384r1) \
@@ -335,7 +338,7 @@ the container filesystem is serve it from the cluster listen. In values.yaml:
 
 ```yaml
 secretVolumes:
-  - kong-cluster-cert
+- kong-cluster-cert
 ```
 
 ```yaml
@@ -358,6 +361,18 @@ cluster:
 
 proxy:
   enabled: false
+```
+
+Enterprise users with Vitals enabled must also enable the cluster telemetry
+service:
+
+```yaml
+clustertelemetry:
+  enabled: true
+  tls:
+    enabled: true
+    servicePort: 8006
+    containerPort: 8006
 ```
 
 If using the ingress controller, you must also specify the DP proxy service as
@@ -385,7 +400,7 @@ Service resource).
 
 ```yaml
 secretVolumes:
-  - kong-cluster-cert
+- kong-cluster-cert
 ```
 
 ```yaml
@@ -401,6 +416,7 @@ env:
   cluster_cert_key: /etc/secrets/kong-cluster-cert/tls.key
   lua_ssl_trusted_certificate: /etc/secrets/kong-cluster-cert/tls.crt
   cluster_control_plane: control-plane-release-name-kong-cluster.hybrid.svc.cluster.local:8005
+  cluster_telemetry_endpoint: control-plane-release-name-kong-clustertelemetry.hybrid.svc.cluster.local:8006 # Enterprise-only
 ```
 
 Note that the `cluster_control_plane` value will differ depending on your
@@ -422,35 +438,43 @@ On Helm 3, CRDs are created if necessary, but are not managed along with the
 release. Releases can be deleted without affecting CRDs; CRDs are only removed
 if you delete them manually.
 
+### Sidecar Containers
+
+The chart can deploy additional containers along with the Kong and Ingress
+Controller containers, sometimes referred to as "sidecar containers".  This can
+be useful to include network proxies or logging services along with Kong.  The
+`deployment.sidecarContainers` field in values.yaml takes an array of objects
+that get appended as-is to the existing `spec.template.spec.containers` array
+in the Kong deployment resource.
+
 ### Example configurations
 
 Several example values.yaml are available in the
-[example-values](https://github.com/Kong/charts/blob/master/charts/kong/example-values/)
+[example-values](https://github.com/Kong/charts/blob/main/charts/kong/example-values/)
 directory.
 
 ## Configuration
 
 ### Kong parameters
 
-| Parameter              | Description                                                                                      | Default                                                                         |
-| ---------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
-| image.registry         | Docker registry to pull from                                                                     |                                                                                 |
-| image.repository       | Kong image                                                                                       | `kong`                                                                          |
-| image.tag              | Kong image version                                                                               | `2.0`                                                                           |
-| image.pullPolicy       | Image pull policy                                                                                | `IfNotPresent`                                                                  |
-| image.pullSecrets      | Image pull secrets                                                                               | `null`                                                                          |
-| replicaCount           | Kong instance count                                                                              | `1`                                                                             |
-| plugins                | Install custom plugins into Kong via ConfigMaps or Secrets                                       | `{}`                                                                            |
-| env                    | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/)                 |                                                                                 |
-| migrations.preUpgrade  | Run "kong migrations up" jobs                                                                    | `true`                                                                          |
-| migrations.postUpgrade | Run "kong migrations finish" jobs                                                                | `true`                                                                          |
-| migrations.annotations | Annotations for migration jobs                                                                   | `{"sidecar.istio.io/inject": "false", "kuma.io/sidecar-injection": "disabled"}` |
-| waitImage.repository   | Image used to wait for database to become ready                                                  | `busybox`                                                                       |
-| waitImage.tag          | Tag for image used to wait for database to become ready                                          | `latest`                                                                        |
-| waitImage.pullPolicy   | Wait image pull policy                                                                           | `IfNotPresent`                                                                  |
-| postgresql.enabled     | Spin up a new postgres instance for Kong                                                         | `false`                                                                         |
-| dblessConfig.configMap | Name of an existing ConfigMap containing the `kong.yml` file. This must have the key `kong.yml`. | ``                                                                              |
-| dblessConfig.config    | Yaml configuration file for the dbless (declarative) configuration of Kong                       | see in `values.yaml`                                                            |
+| Parameter                          | Description                                                                           | Default             |
+| ---------------------------------- | ------------------------------------------------------------------------------------- | ------------------- |
+| image.repository                   | Kong image                                                                            | `kong`              |
+| image.tag                          | Kong image version                                                                    | `2.0`               |
+| image.pullPolicy                   | Image pull policy                                                                     | `IfNotPresent`      |
+| image.pullSecrets                  | Image pull secrets                                                                    | `null`              |
+| replicaCount                       | Kong instance count                                                                   | `1`                 |
+| plugins                            | Install custom plugins into Kong via ConfigMaps or Secrets                            | `{}`                |
+| env                                | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/)      |                     |
+| migrations.preUpgrade              | Run "kong migrations up" jobs                                                         | `true`              |
+| migrations.postUpgrade             | Run "kong migrations finish" jobs                                                     | `true`              |
+| migrations.annotations             | Annotations for migration jobs                                                        | `{"sidecar.istio.io/inject": "false", "kuma.io/sidecar-injection": "disabled"}` |
+| waitImage.repository               | Image used to wait for database to become ready                                       | `bash`              |
+| waitImage.tag                      | Tag for image used to wait for database to become ready                               | `5`                 |
+| waitImage.pullPolicy               | Wait image pull policy                                                                | `IfNotPresent`      |
+| postgresql.enabled                 | Spin up a new postgres instance for Kong                                              | `false`             |
+| dblessConfig.configMap             | Name of an existing ConfigMap containing the `kong.yml` file. This must have the key `kong.yml`.| `` |
+| dblessConfig.config                | Yaml configuration file for the dbless (declarative) configuration of Kong | see in `values.yaml`    |
 
 #### Kong Service Parameters
 
@@ -461,14 +485,14 @@ and K8S Ingress properties. Defaults are listed only if consistent across the
 individual services: see values.yaml for their individual default values.
 
 `SVC` below can be substituted with each of:
-
-- `proxy`
-- `admin`
-- `manager`
-- `portal`
-- `portalapi`
-- `cluster`
-- `status`
+* `proxy`
+* `admin`
+* `manager`
+* `portal`
+* `portalapi`
+* `cluster`
+* `clustertelemetry`
+* `status`
 
 `status` is intended for internal use within the cluster. Unlike other
 services it cannot be exposed externally, and cannot create a Kubernetes
@@ -482,70 +506,70 @@ authentication, which cannot pass through an ingress proxy). `clustertelemetry`
 is similar, and used when Vitals is enabled on Kong Enterprise control plane
 nodes.
 
-| Parameter                         | Description                                                                    | Default     |
-| --------------------------------- | ------------------------------------------------------------------------------ | ----------- |
-| SVC.enabled                       | Create Service resource for SVC (admin, proxy, manager, etc.)                  |             |
-| SVC.http.enabled                  | Enables http on the service                                                    |             |
-| SVC.http.servicePort              | Service port to use for http                                                   |             |
-| SVC.http.containerPort            | Container port to use for http                                                 |             |
-| SVC.http.nodePort                 | Node port to use for http                                                      |             |
-| SVC.http.hostPort                 | Host port to use for http                                                      |             |
-| SVC.http.parameters               | Array of additional listen parameters                                          | `[]`        |
-| SVC.tls.enabled                   | Enables TLS on the service                                                     |             |
-| SVC.tls.containerPort             | Container port to use for TLS                                                  |             |
-| SVC.tls.servicePort               | Service port to use for TLS                                                    |             |
-| SVC.tls.nodePort                  | Node port to use for TLS                                                       |             |
-| SVC.tls.hostPort                  | Host port to use for TLS                                                       |             |
-| SVC.tls.overrideServiceTargetPort | Override service port to use for TLS without touching Kong containerPort       |             |
-| SVC.tls.parameters                | Array of additional listen parameters                                          | `["http2"]` |
-| SVC.type                          | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                   |             |
-| SVC.clusterIP                     | k8s service clusterIP                                                          |             |
-| SVC.loadBalancerSourceRanges      | Limit service access to CIDRs if set and service type is `LoadBalancer`        | `[]`        |
-| SVC.loadBalancerIP                | Reuse an existing ingress static IP for the service                            |             |
-| SVC.externalIPs                   | IPs for which nodes in the cluster will also accept traffic for the servic     | `[]`        |
-| SVC.externalTrafficPolicy         | k8s service's externalTrafficPolicy. Options: Cluster, Local                   |             |
-| SVC.ingress.enabled               | Enable ingress resource creation (works with SVC.type=ClusterIP)               | `false`     |
-| SVC.ingress.tls                   | Name of secret resource, containing TLS secret                                 |             |
-| SVC.ingress.hosts                 | List of ingress hosts.                                                         | `[]`        |
-| SVC.ingress.path                  | Ingress path.                                                                  | `/`         |
-| SVC.ingress.annotations           | Ingress annotations. See documentation for your ingress controller for details | `{}`        |
-| SVC.annotations                   | Service annotations                                                            | `{}`        |
+| Parameter                          | Description                                                                           | Default             |
+| ---------------------------------- | ------------------------------------------------------------------------------------- | ------------------- |
+| SVC.enabled                        | Create Service resource for SVC (admin, proxy, manager, etc.)                         |                     |
+| SVC.http.enabled                   | Enables http on the service                                                           |                     |
+| SVC.http.servicePort               | Service port to use for http                                                          |                     |
+| SVC.http.containerPort             | Container port to use for http                                                        |                     |
+| SVC.http.nodePort                  | Node port to use for http                                                             |                     |
+| SVC.http.hostPort                  | Host port to use for http                                                             |                     |
+| SVC.http.parameters                | Array of additional listen parameters                                                 | `[]`                |
+| SVC.tls.enabled                    | Enables TLS on the service                                                            |                     |
+| SVC.tls.containerPort              | Container port to use for TLS                                                         |                     |
+| SVC.tls.servicePort                | Service port to use for TLS                                                           |                     |
+| SVC.tls.nodePort                   | Node port to use for TLS                                                              |                     |
+| SVC.tls.hostPort                   | Host port to use for TLS                                                              |                     |
+| SVC.tls.overrideServiceTargetPort  | Override service port to use for TLS without touching Kong containerPort              |                     |
+| SVC.tls.parameters                 | Array of additional listen parameters                                                 | `["http2"]`         |
+| SVC.type                           | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                          |                     |
+| SVC.clusterIP                      | k8s service clusterIP                                                                 |                     |
+| SVC.loadBalancerSourceRanges       | Limit service access to CIDRs if set and service type is `LoadBalancer`               | `[]`                |
+| SVC.loadBalancerIP                 | Reuse an existing ingress static IP for the service                                   |                     |
+| SVC.externalIPs                    | IPs for which nodes in the cluster will also accept traffic for the servic            | `[]`                |
+| SVC.externalTrafficPolicy          | k8s service's externalTrafficPolicy. Options: Cluster, Local                          |                     |
+| SVC.ingress.enabled                | Enable ingress resource creation (works with SVC.type=ClusterIP)                      | `false`             |
+| SVC.ingress.tls                    | Name of secret resource, containing TLS secret                                        |                     |
+| SVC.ingress.hostname               | Ingress hostname                                                                      | `""`                |
+| SVC.ingress.path                   | Ingress path.                                                                         | `/`                 |
+| SVC.ingress.annotations            | Ingress annotations. See documentation for your ingress controller for details        | `{}`                |
+| SVC.annotations                    | Service annotations                                                                   | `{}`                |
 
 #### Stream listens
 
 The proxy configuration additionally supports creating stream listens. These
 are configured using an array of objects under `proxy.stream`:
 
-| Parameter     | Description                               | Default |
-| ------------- | ----------------------------------------- | ------- |
-| containerPort | Container port to use for a stream listen |         |
-| servicePort   | Service port to use for a stream listen   |         |
-| nodePort      | Node port to use for a stream listen      |         |
-| hostPort      | Host port to use for a stream listen      |         |
-| parameters    | Array of additional listen parameters     | `[]`    |
+| Parameter                          | Description                                                                           | Default             |
+| ---------------------------------- | ------------------------------------------------------------------------------------- | ------------------- |
+| containerPort                      | Container port to use for a stream listen                                             |                     |
+| servicePort                        | Service port to use for a stream listen                                               |                     |
+| nodePort                           | Node port to use for a stream listen                                                  |                     |
+| hostPort                           | Host port to use for a stream listen                                                  |                     |
+| parameters                         | Array of additional listen parameters                                                 | `[]`                |
 
 ### Ingress Controller Parameters
 
 All of the following properties are nested under the `ingressController`
 section of `values.yaml` file:
 
-| Parameter                      | Description                                                                                                                                                                                                                               | Default                                                                      |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| enabled                        | Deploy the ingress controller, rbac and crd                                                                                                                                                                                               | true                                                                         |
-| image.repository               | Docker image with the ingress controller                                                                                                                                                                                                  | kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller |
-| image.tag                      | Version of the ingress controller                                                                                                                                                                                                         | 0.9.1                                                                        |
-| readinessProbe                 | Kong ingress controllers readiness probe                                                                                                                                                                                                  |                                                                              |
-| livenessProbe                  | Kong ingress controllers liveness probe                                                                                                                                                                                                   |                                                                              |
-| installCRDs                    | Create CRDs. **FOR HELM3, MAKE SURE THIS VALUE IS SET TO `false`.** Regardless of value of this, Helm v3+ will install the CRDs if those are not present already. Use `--skip-crds` with `helm install` if you want to skip CRD creation. | true                                                                         |
-| serviceAccount.create          | Create Service Account for ingress controller                                                                                                                                                                                             | true                                                                         |
-| serviceAccount.name            | Use existing Service Account, specify its name                                                                                                                                                                                            | ""                                                                           |
-| serviceAccount.annotations     | Annotations for Service Account                                                                                                                                                                                                           | {}                                                                           |
-| env                            | Specify Kong Ingress Controller configuration via environment variables                                                                                                                                                                   |                                                                              |
-| ingressClass                   | The ingress-class value for controller                                                                                                                                                                                                    | kong                                                                         |
-| args                           | List of ingress-controller cli arguments                                                                                                                                                                                                  | []                                                                           |
-| admissionWebhook.enabled       | Whether to enable the validating admission webhook                                                                                                                                                                                        | false                                                                        |
-| admissionWebhook.failurePolicy | How unrecognized errors from the admission endpoint are handled (Ignore or Fail)                                                                                                                                                          | Fail                                                                         |
-| admissionWebhook.port          | The port the ingress controller will listen on for admission webhooks                                                                                                                                                                     | 8080                                                                         |
+| Parameter                          | Description                                                                           | Default                                                                      |
+| ---------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| enabled                            | Deploy the ingress controller, rbac and crd                                           | true                                                                         |
+| image.repository                   | Docker image with the ingress controller                                              | kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller |
+| image.tag                          | Version of the ingress controller                                                     | 0.9.1                                                                        |
+| readinessProbe                     | Kong ingress controllers readiness probe                                              |                                                                              |
+| livenessProbe                      | Kong ingress controllers liveness probe                                               |                                                                              |
+| installCRDs                        | Create CRDs. **FOR HELM3, MAKE SURE THIS VALUE IS SET TO `false`.**  Regardless of value of this, Helm v3+ will install the CRDs if those are not present already. Use `--skip-crds` with `helm install` if you want to skip CRD creation.                 | true                                                                         |
+| serviceAccount.create              | Create Service Account for ingress controller                                         | true
+| serviceAccount.name                | Use existing Service Account, specify its name                                        | ""
+| serviceAccount.annotations         | Annotations for Service Account                                                       | {}
+| env                                | Specify Kong Ingress Controller configuration via environment variables               |                                                                              |
+| ingressClass                       | The ingress-class value for controller                                                | kong                                                                         |
+| args                               | List of ingress-controller cli arguments                                              | []                                                                           |
+| admissionWebhook.enabled           | Whether to enable the validating admission webhook                                    | false                                                                        |
+| admissionWebhook.failurePolicy     | How unrecognized errors from the admission endpoint are handled (Ignore or Fail)      | Fail                                                                         |
+| admissionWebhook.port              | The port the ingress controller will listen on for admission webhooks                 | 8080                                                                         |
 
 For a complete list of all configuration values you can set in the
 `env` section, please read the Kong Ingress Controller's
@@ -553,38 +577,38 @@ For a complete list of all configuration values you can set in the
 
 ### General Parameters
 
-| Parameter                                  | Description                                                                                                                               | Default           |
-| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
-| deployment.kong.enabled                    | Enable or disable deploying Kong                                                                                                          | `true`            |
-| autoscaling.enabled                        | Set this to `true` to enable autoscaling                                                                                                  | `false`           |
-| autoscaling.minReplicas                    | Set minimum number of replicas                                                                                                            | `2`               |
-| autoscaling.maxReplicas                    | Set maximum number of replicas                                                                                                            | `5`               |
-| autoscaling.targetCPUUtilizationPercentage | Target Percentage for when autoscaling takes affect. Only used if cluster doesnt support `autoscaling/v2beta2`                            | `80`              |
-| autoscaling.metrics                        | metrics used for autoscaling for clusters that support autoscaling/v2beta2` | See [values.yaml](values.yaml)                              |
-| updateStrategy                             | update strategy for deployment                                                                                                            | `{}`              |
-| readinessProbe                             | Kong readiness probe                                                                                                                      |                   |
-| livenessProbe                              | Kong liveness probe                                                                                                                       |                   |
-| lifecycle                                  | Proxy container lifecycle hooks                                                                                                           | see `values.yaml` |
-| affinity                                   | Node/pod affinities                                                                                                                       |                   |
-| nodeSelector                               | Node labels for pod assignment                                                                                                            | `{}`              |
-| deploymentAnnotations                      | Annotations to add to deployment                                                                                                          | see `values.yaml` |
-| podAnnotations                             | Annotations to add to each pod                                                                                                            | `{}`              |
-| podLabels                                  | Labels to add to each pod                                                                                                                 | `{}`              |
-| resources                                  | Pod resource requests & limits                                                                                                            | `{}`              |
-| tolerations                                | List of node taints to tolerate                                                                                                           | `[]`              |
-| podDisruptionBudget.enabled                | Enable PodDisruptionBudget for Kong                                                                                                       | `false`           |
-| podDisruptionBudget.maxUnavailable         | Represents the minimum number of Pods that can be unavailable (integer or percentage)                                                     | `50%`             |
-| podDisruptionBudget.minAvailable           | Represents the number of Pods that must be available (integer or percentage)                                                              |                   |
-| podSecurityPolicy.enabled                  | Enable podSecurityPolicy for Kong                                                                                                         | `false`           |
-| podSecurityPolicy.spec                     | Collection of [PodSecurityPolicy settings](https://kubernetes.io/docs/concepts/policy/pod-security-policy/#what-is-a-pod-security-policy) |                   |
-| priorityClassName                          | Set pod scheduling priority class for Kong pods                                                                                           | `""`              |
-| secretVolumes                              | Mount given secrets as a volume in Kong container to override default certs and keys.                                                     | `[]`              |
-| securityContext                            | Set the securityContext for Kong Pods                                                                                                     | `{}`              |
-| serviceMonitor.enabled                     | Create ServiceMonitor for Prometheus Operator                                                                                             | `false`           |
-| serviceMonitor.interval                    | Scraping interval                                                                                                                         | `30s`             |
-| serviceMonitor.namespace                   | Where to create ServiceMonitor                                                                                                            |                   |
-| serviceMonitor.labels                      | ServiceMonitor labels                                                                                                                     | `{}`              |
-| serviceMonitor.targetLabels                | ServiceMonitor targetLabels                                                                                                               | `{}`              |
+| Parameter                          | Description                                                                           | Default             |
+| ---------------------------------- | ------------------------------------------------------------------------------------- | ------------------- |
+| deployment.kong.enabled            | Enable or disable deploying Kong                                                      | `true`              |
+| autoscaling.enabled                | Set this to `true` to enable autoscaling                                              | `false`             |
+| autoscaling.minReplicas            | Set minimum number of replicas                                                        | `2`                 |
+| autoscaling.maxReplicas            | Set maximum number of replicas                                                        | `5`                 |
+| autoscaling.targetCPUUtilizationPercentage | Target Percentage for when autoscaling takes affect. Only used if cluster doesnt support `autoscaling/v2beta2` | `80`  |
+| autoscaling.metrics                | metrics used for autoscaling for clusters that support autoscaling/v2beta2`           | See [values.yaml](values.yaml) |
+| updateStrategy                     | update strategy for deployment                                                        | `{}`                |
+| readinessProbe                     | Kong readiness probe                                                                  |                     |
+| livenessProbe                      | Kong liveness probe                                                                   |                     |
+| lifecycle                          | Proxy container lifecycle hooks                                                       | see `values.yaml`   |
+| affinity                           | Node/pod affinities                                                                   |                     |
+| nodeSelector                       | Node labels for pod assignment                                                        | `{}`                |
+| deploymentAnnotations              | Annotations to add to deployment                                                      |  see `values.yaml`  |
+| podAnnotations                     | Annotations to add to each pod                                                        | `{}`                |
+| podLabels                          | Labels to add to each pod                                                             | `{}`                |
+| resources                          | Pod resource requests & limits                                                        | `{}`                |
+| tolerations                        | List of node taints to tolerate                                                       | `[]`                |
+| podDisruptionBudget.enabled        | Enable PodDisruptionBudget for Kong                                                   | `false`             |
+| podDisruptionBudget.maxUnavailable | Represents the minimum number of Pods that can be unavailable (integer or percentage) | `50%`               |
+| podDisruptionBudget.minAvailable   | Represents the number of Pods that must be available (integer or percentage)          |                     |
+| podSecurityPolicy.enabled          | Enable podSecurityPolicy for Kong                                                     | `false`             |
+| podSecurityPolicy.spec             | Collection of [PodSecurityPolicy settings](https://kubernetes.io/docs/concepts/policy/pod-security-policy/#what-is-a-pod-security-policy) | |
+| priorityClassName                  | Set pod scheduling priority class for Kong pods                                       | `""`                |
+| secretVolumes                      | Mount given secrets as a volume in Kong container to override default certs and keys. | `[]`                |
+| securityContext                    | Set the securityContext for Kong Pods                                                 | `{}`                |
+| serviceMonitor.enabled             | Create ServiceMonitor for Prometheus Operator                                         | `false`             |
+| serviceMonitor.interval            | Scraping interval                                                                     | `30s`               |
+| serviceMonitor.namespace           | Where to create ServiceMonitor                                                        |                     |
+| serviceMonitor.labels              | ServiceMonitor labels                                                                 | `{}`                |
+| serviceMonitor.targetLabels        | ServiceMonitor targetLabels                                                           | `{}`                |
 
 #### The `env` section
 
@@ -600,14 +624,14 @@ An example:
 
 ```yaml
 kong:
-  env: # load PG password from a secret dynamically
-    pg_user: kong
-    pg_password:
-      valueFrom:
-        secretKeyRef:
-          key: kong
-          name: postgres
-  nginx_worker_processes: '2'
+  env:                       # load PG password from a secret dynamically
+     pg_user: kong
+     pg_password:
+       valueFrom:
+         secretKeyRef:
+            key: kong
+            name: postgres
+  nginx_worker_processes: "2"
 ```
 
 For complete list of Kong configurations please check the
@@ -702,9 +726,9 @@ value in the secret. For example:
 
 ```yaml
 env:
-  password:
-    valueFrom:
-      secretKeyRef:
+ password:
+   valueFrom:
+     secretKeyRef:
         name: kong-enterprise-superuser-password
         key: password
 ```
@@ -715,9 +739,9 @@ specifying `kong_admin_token` in its environment variables:
 ```yaml
 ingressController:
   env:
-    kong_admin_token:
-      valueFrom:
-        secretKeyRef:
+   kong_admin_token:
+     valueFrom:
+       secretKeyRef:
           name: kong-enterprise-superuser-password
           key: password
 ```
@@ -751,7 +775,6 @@ $ cat portal_session_conf
 $ kubectl create secret generic kong-session-config --from-file=admin_gui_session_conf --from-file=portal_session_conf
 secret/kong-session-config created
 ```
-
 The exact plugin settings may vary in your environment. The `secret` should
 always be changed for both configurations.
 
