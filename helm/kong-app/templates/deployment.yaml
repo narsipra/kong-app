@@ -6,6 +6,7 @@ metadata:
   labels:
     {{- include "kong.metaLabels" . | nindent 4 }}
     app.kubernetes.io/component: app
+    giantswarm.io/monitoring_basic_sli: "true"
   annotations:
     {{- if .Values.deploymentAnnotations }}
 {{ toYaml .Values.deploymentAnnotations | indent 4 }}
@@ -71,7 +72,7 @@ spec:
         {{- if .Values.image.unifiedRepoTag }}
         image: "{{ .Values.image.unifiedRepoTag }}"
         {{- else }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         {{- end }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
