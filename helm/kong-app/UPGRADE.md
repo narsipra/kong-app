@@ -17,6 +17,7 @@ upgrading from a previous version.
 ## Table of contents
 
 - [Upgrade considerations for all versions](#upgrade-considerations-for-all-versions)
+- [1.9.0](#190)
 - [1.6.0](#160)
 - [1.5.0](#150)
 - [1.4.0](#140)
@@ -34,7 +35,7 @@ migrations finish`.
 
 If you split your Kong deployment across multiple Helm releases (to create
 proxy-only and admin-only nodes, for example), you must
-[set which migration jobs run based on your upgrade order](https://github.com/Kong/charts/blob/master/charts/kong/README.md#separate-admin-and-proxy-nodes).
+[set which migration jobs run based on your upgrade order](https://github.com/Kong/charts/blob/main/charts/kong/README.md#separate-admin-and-proxy-nodes).
 
 While the migrations themselves are automated, the chart does not automatically
 ensure that you follow the recommended upgrade path. If you are upgrading from
@@ -51,6 +52,60 @@ text ending with `field is immutable`. This is typically due to a bug with the
 `init-migrations` job, which was not removed automatically prior to 1.5.0.
 If you encounter this error, deleting any existing `init-migrations` jobs will
 clear it.
+
+## 1.10.0
+
+### `KongClusterPlugin` replaces global `KongPlugin`s
+
+Kong Ingress Controller 0.10.0 no longer supports `KongPlugin`s with a `global: true` label. See the [KIC changelog for 0.10.0](https://github.com/Kong/kubernetes-ingress-controller/blob/main/CHANGELOG.md#0100---20200915) for migration hints.
+
+### Dropping support for resources not specifying an ingress class
+
+Kong Ingress Controller 0.10.0 drops support for certain kinds of resources without a `kubernetes.io/ingress.class` annotation. See the [KIC changelog for 0.10.0](https://github.com/Kong/kubernetes-ingress-controller/blob/main/CHANGELOG.md#0100---20200915) for the exact list of those kinds, and for possible migration paths.
+
+## 1.9.0
+
+### New image for Enterprise controller-managed DB-less deployments
+
+As of Kong Enterprise 2.1.3.0, there is no longer a separate image
+(`kong-enterprise-k8s`) for controller-managed DB-less deployments. All Kong
+Enterprise deployments now use the `kong-enterprise-edition` image.
+
+Existing users of the `kong-enterprise-k8s` image can use the latest
+`kong-enterprise-edition` image as a drop-in replacement for the
+`kong-enterprise-k8s` image. You will also need to [create a Docker registry
+secret](https://github.com/Kong/charts/blob/main/charts/kong/README.md#kong-enterprise-docker-registry-access)
+for the `kong-enterprise-edition` registry and add it to `image.pullSecrets` in
+values.yaml if you do not have one already.
+
+### Changes to wait-for-postgres image
+
+Prior to 1.9.0, the chart launched a busybox initContainer for migration Pods
+to check Postgres' reachability [using
+netcat](https://github.com/Kong/charts/blob/kong-1.8.0/charts/kong/templates/_helpers.tpl#L626).
+
+As of 1.9.0, the chart uses a [bash
+script](https://github.com/Kong/charts/blob/kong-1.9.0/charts/kong/templates/wait-for-postgres-script.yaml)
+to perform the same connectivity check. The default `waitImage.repository`
+value is now `bash` rather than `busybox`. Double-check your values.yaml to
+confirm that you do not set `waitImage.repository` and `waitImage.tag` to the
+old defaults: if you do, remove that configuration before upgrading.
+
+The Helm upgrade cycle requires this script be available for upgrade jobs. On
+existing installations, you must first perform an initial `helm upgrade --set
+migrations.preUpgrade=false --migrations.postUpgrade=false` to chart 1.9.0.
+Perform this initial upgrade without making changes to your Kong image version:
+if you are upgrading Kong along with the chart, perform a separate upgrade
+after with the migration jobs re-enabled.
+
+If you do not override `waitImage.repository` in your releases, you do not need
+to make any other configuration changes when upgrading to 1.9.0.
+
+If you do override `waitImage.repository` to use a custom image, you must
+switch to a custom image that provides a `bash` executable. Note that busybox
+images, or images derived from it, do _not_ include a `bash` executable. We
+recommend switching to an image derived from the public bash Docker image or a
+base operating system image that provides a `bash` executable.
 
 ## 1.6.0
 
@@ -117,9 +172,9 @@ values.yaml.
 
 The new format addresses several needs:
 * The initial migrations job are only created during the initial install,
-  preventing [conflicts on upgrades](https://github.com/Kong/charts/blob/master/charts/kong/FAQs.md#running-helm-upgrade-fails-because-of-old-init-migrations-job).
+  preventing [conflicts on upgrades](https://github.com/Kong/charts/blob/main/charts/kong/FAQs.md#running-helm-upgrade-fails-because-of-old-init-migrations-job).
 * The upgrade migrations jobs can be disabled as need for managing
-  [multi-release clusters](https://github.com/Kong/charts/blob/master/charts/kong/README.md#separate-admin-and-proxy-nodes).
+  [multi-release clusters](https://github.com/Kong/charts/blob/main/charts/kong/README.md#separate-admin-and-proxy-nodes).
   This enables management of clusters that have nodes with different roles,
   e.g. nodes that only run the proxy and nodes that only run the admin API.
 * Migration jobs now allow specifying annotations, and provide a default set
@@ -182,7 +237,7 @@ This is a new annotation that is equivalent to the `route.strip_path` setting
 in KongIngress resources. Note that if you have already set this to `false`,
 you should leave it as-is and not add an annotation to the ingress.
 
-### Changes to Kong service configuration 
+### Changes to Kong service configuration
 
 1.4.0 reworks the templates and configuration used to generate Kong
 configuration and Kuberenetes resources for Kong's services (the admin API,

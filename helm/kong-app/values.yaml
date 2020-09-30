@@ -1,6 +1,3 @@
----
-
-# -----------------------------------------------------------------------------
 # Default values for Kong's Helm Chart.
 # Declare variables to be passed into your templates.
 #
@@ -22,6 +19,11 @@ deployment:
     # Setting this to false with ingressController.enabled=true will create a
     # controller-only release.
     enabled: true
+  ## Optionally specify any extra sidecar containers to be included in the deployment
+  ## See https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core
+  # sidecarContainers:
+  #   - name: sidecar
+  #     image: sidecar:latest
 
 # -----------------------------------------------------------------------------
 # Kong parameters
@@ -50,15 +52,11 @@ env:
 
 # Specify Kong's Docker image and repository details here
 image:
-  registry: quay.io
-  repository: giantswarm/kong
-  tag: "2.1.3"
-  # kong-enterprise-k8s image (Kong OSS + Enterprise plugins)
-  # repository: kong-docker-kong-enterprise-k8s.bintray.io/kong-enterprise-k8s
-  # tag: "2.0.4.2-alpine"
-  # kong-enterprise image
+  repository: kong
+  tag: "2.1"
+  # Kong Enterprise
   # repository: kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition
-  # tag: "1.5.0.4-alpine"
+  # tag: "2.1.3.0-alpine"
 
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
@@ -70,8 +68,6 @@ image:
   #   - myRegistrKeySecretName
 
 # Specify Kong admin API service and listener configuration
-# Note: It is recommended to not use the Admin API to configure Kong
-# when using Kong as an Ingress Controller.
 admin:
   # Enable creating a Kubernetes service for the admin API
   # Disabling this is recommended for most ingress controller configurations
@@ -106,7 +102,7 @@ admin:
     # nodePort: 32443
     # Additional listen parameters, e.g. "reuseport", "backlog=16384"
     parameters:
-      - http2
+    - http2
 
   # Kong admin ingress settings. Useful if you want to expose the Admin
   # API of Kong outside the k8s cluster.
@@ -195,7 +191,7 @@ proxy:
     # nodePort: 32443
     # Additional listen parameters, e.g. "reuseport", "backlog=16384"
     parameters:
-      - http2
+    - http2
 
   # Define stream (TCP) listen
   # To enable, remove "{}", uncomment the section below, and select your desired
@@ -307,8 +303,9 @@ dblessConfig:
 ingressController:
   enabled: true
   image:
-    repository: giantswarm/kong-ingress-controller
-    tag: 0.9.1
+    repository: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
+    tag: 0.10.0
+  args: []
 
   # Specify Kong Ingress Controller configuration via environment variables
   env:
@@ -327,13 +324,9 @@ ingressController:
   admissionWebhook:
     enabled: false
     failurePolicy: Fail
-    port: "8080"
+    port: 8080
 
-  # This has been changed from the default `kong`
-  # as it allows this app to exist alongside other
-  # ingress controllers, such as nginx which is the
-  # default in the cluster.
-  ingressClass: kong-app
+  ingressClass: kong
 
   rbac:
     # Specifies whether RBAC resources should be created
@@ -348,7 +341,7 @@ ingressController:
     # The annotations for service account
     annotations: {}
 
-  installCRDs: false
+  installCRDs: true
 
   # general properties
   livenessProbe:
@@ -371,20 +364,14 @@ ingressController:
     periodSeconds: 10
     successThreshold: 1
     failureThreshold: 3
-  resources:
-    limits:
-      cpu: 100m
-      memory: 256Mi
-    requests:
-      cpu: 100m
-      memory: 256Mi
+  resources: {}
 
 # -----------------------------------------------------------------------------
 # Postgres sub-chart parameters
 # -----------------------------------------------------------------------------
 
 # Kong can run without a database or use either Postgres or Cassandra
-# as a backend datatstore for its configuration.
+# as a backend datatstore for it's configuration.
 # By default, this chart installs Kong without a database.
 
 # If you would like to use a database, there are two options:
@@ -394,7 +381,7 @@ ingressController:
 #   along-with Kong as part of a single Helm release.
 
 # PostgreSQL chart documentation:
-# https://github.com/helm/charts/blob/master/stable/postgresql/README.md
+# https://github.com/helm/charts/blob/main/stable/postgresql/README.md
 
 postgresql:
   enabled: false
@@ -408,8 +395,8 @@ postgresql:
 # -----------------------------------------------------------------------------
 
 waitImage:
-  repository: giantswarm/busybox
-  tag: 1.32.0
+  repository: bash
+  tag: 5
   pullPolicy: IfNotPresent
 
 # update strategy
@@ -421,13 +408,13 @@ updateStrategy: {}
 
 # If you want to specify resources, uncomment the following
 # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-resources:
-  limits:
-    cpu: 100m
-    memory: 512Mi
-  requests:
-    cpu: 100m
-    memory: 512Mi
+resources: {}
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
 
 # readinessProbe for Kong pods
 # If using Kong Enterprise with RBAC, you must add a Kong-Admin-Token header
@@ -474,14 +461,7 @@ tolerations: []
 nodeSelector: {}
 
 # Annotation to be added to Kong pods
-# Removing giantswarm.io annotations will result in Giant Swarm being unable to
-# monitor the deployment.
-podAnnotations:
-  giantswarm.io/monitoring: "true"
-  giantswarm.io/monitoring-path: metrics
-  giantswarm.io/monitoring-port: "9542"
-  prometheus.io/scrape: "true"
-  prometheus.io/port: "9542"
+podAnnotations: {}
 
 # Labels to be added to Kong pods
 podLabels: {}
@@ -516,7 +496,7 @@ podDisruptionBudget:
   maxUnavailable: "50%"
 
 podSecurityPolicy:
-  enabled: true
+  enabled: false
   spec:
     privileged: false
     fsGroup:
@@ -540,6 +520,7 @@ podSecurityPolicy:
     # Make the root filesystem read-only. This is not compatible with Kong Enterprise <1.5.
     # If you use Kong Enterprise <1.5, this must be set to false.
     readOnlyRootFilesystem: true
+
 
 priorityClassName: ""
 
@@ -635,7 +616,7 @@ manager:
     # nodePort: 32443
     # Additional listen parameters, e.g. "reuseport", "backlog=16384"
     parameters:
-      - http2
+    - http2
 
   ingress:
     # Enable/disable exposure using ingress.
@@ -679,7 +660,7 @@ portal:
     # nodePort: 32443
     # Additional listen parameters, e.g. "reuseport", "backlog=16384"
     parameters:
-      - http2
+    - http2
 
   ingress:
     # Enable/disable exposure using ingress.
@@ -723,7 +704,7 @@ portalapi:
     # nodePort: 32443
     # Additional listen parameters, e.g. "reuseport", "backlog=16384"
     parameters:
-      - http2
+    - http2
 
   ingress:
     # Enable/disable exposure using ingress.
@@ -736,5 +717,22 @@ portalapi:
     annotations: {}
     # Ingress path.
     path: /
+
+  externalIPs: []
+
+clustertelemetry:
+  enabled: false
+  # If you want to specify annotations for the cluster telemetry service, uncomment the following
+  # line, add additional or adjust as needed, and remove the curly braces after 'annotations:'.
+  annotations: {}
+  #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+
+  tls:
+    enabled: false
+    servicePort: 8006
+    containerPort: 8006
+    parameters: []
+
+  type: ClusterIP
 
   externalIPs: []

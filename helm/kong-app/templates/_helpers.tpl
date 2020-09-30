@@ -245,6 +245,10 @@ The name of the service used for the ingress controller's validation webhook
   emptyDir: {}
 - name: {{ template "kong.fullname" . }}-tmp
   emptyDir: {}
+- name: {{ template "kong.fullname" . }}-bash-wait-for-postgres
+  configMap:
+    name: {{ template "kong.fullname" . }}-bash-wait-for-postgres
+    defaultMode: 0755
 {{- range .Values.plugins.configMaps }}
 - name: kong-plugin-{{ .pluginName }}
   configMap:
@@ -312,7 +316,7 @@ The name of the service used for the ingress controller's validation webhook
   mountPath: {{ $mountPath }}
   readOnly: true
 {{- range .subdirectories }}
-- name: {{ .name }}
+- name: {{ .name  }}
   mountPath: {{ printf "%s/%s" $mountPath ( .path | default .name ) }}
   readOnly: true
 {{- end }}
@@ -338,7 +342,7 @@ The name of the service used for the ingress controller's validation webhook
 {{- range .Values.plugins.secrets -}}
   {{ $myList = append $myList .pluginName -}}
 {{- end }}
-{{- $myList | uniq | join "," -}}
+{{- $myList | join "," -}}
 {{- end -}}
 
 {{- define "kong.wait-for-db" -}}
@@ -346,7 +350,7 @@ The name of the service used for the ingress controller's validation webhook
 {{- if .Values.image.unifiedRepoTag }}
   image: "{{ .Values.image.unifiedRepoTag }}"
 {{- else }}
-  image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+  image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
 {{- end }}
   imagePullPolicy: {{ .Values.image.pullPolicy }}
   env:
@@ -380,7 +384,7 @@ The name of the service used for the ingress controller's validation webhook
 {{- if .Values.ingressController.image.unifiedRepoTag }}
   image: "{{ .Values.ingressController.image.unifiedRepoTag }}"
 {{- else }}
-  image: "{{ .Values.image.registry }}/{{ .Values.ingressController.image.repository }}:{{ .Values.ingressController.image.tag }}"
+  image: "{{ .Values.ingressController.image.repository }}:{{ .Values.ingressController.image.tag }}"
 {{- end }}
   imagePullPolicy: {{ .Values.image.pullPolicy }}
   readinessProbe:
@@ -481,6 +485,7 @@ TODO: remove legacy admin listen behavior at a future date
   {{- if not .Values.enterprise.vitals.enabled }}
     {{- $_ := set $autoEnv "KONG_VITALS" "off" -}}
   {{- end }}
+  {{- $_ := set $autoEnv "KONG_CLUSTER_TELEMETRY_LISTEN" (include "kong.listen" .Values.clustertelemetry) -}}
 
   {{- if .Values.enterprise.portal.enabled }}
     {{- $_ := set $autoEnv "KONG_PORTAL" "on" -}}
@@ -618,10 +623,13 @@ Environment variables are sorted alphabetically
 {{- if .Values.waitImage.unifiedRepoTag }}
   image: "{{ .Values.waitImage.unifiedRepoTag }}"
 {{- else }}
-  image: "{{ .Values.image.registry }}/{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
+  image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
 {{- end }}
   imagePullPolicy: {{ .Values.waitImage.pullPolicy }}
   env:
   {{- include "kong.no_daemon_env" . | nindent 2 }}
-  command: [ "/bin/sh", "-c", "set -u; until nc -zv $KONG_PG_HOST $KONG_PG_PORT -w1; do echo \"waiting for db - trying ${KONG_PG_HOST}:${KONG_PG_PORT}\"; sleep 1; done" ]
+  command: [ "bash", "/wait_postgres/wait.sh" ]
+  volumeMounts:
+  - name: {{ template "kong.fullname" . }}-bash-wait-for-postgres
+    mountPath: /wait_postgres
 {{- end -}}

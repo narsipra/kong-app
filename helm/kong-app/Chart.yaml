@@ -3,8 +3,12 @@ description: The Cloud-Native Ingress and API-management
 engine: gotpl
 home: https://konghq.com/
 icon: https://s3.amazonaws.com/downloads.kong/universe/assets/icon-kong-inc-large.png
-name: kong-app
+maintainers:
+- name: hbagdi
+  email: harry@konghq.com
+- name: rainest
+  email: traines@konghq.com
+name: kong
 sources:
-- https://raw.githubusercontent.com/giantswarm/kong-app/v[[ .Version ]]/README.md
-version: [[ .Version ]]
-appVersion: 2.1.3
+version: 1.10.0
+appVersion: 2.0
