@@ -1,6 +1,3 @@
----
-
-# -----------------------------------------------------------------------------
 # Default values for Kong's Helm Chart.
 # Declare variables to be passed into your templates.
 #
@@ -58,12 +55,9 @@ image:
   registry: quay.io
   repository: giantswarm/kong
   tag: "2.1.3"
-  # kong-enterprise-k8s image (Kong OSS + Enterprise plugins)
-  # repository: kong-docker-kong-enterprise-k8s.bintray.io/kong-enterprise-k8s
-  # tag: "2.0.4.2-alpine"
-  # kong-enterprise image
+  # Kong Enterprise
   # repository: kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition
-  # tag: "1.5.0.4-alpine"
+  # tag: "2.1.3.0-alpine"
 
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
@@ -75,8 +69,6 @@ image:
   #   - myRegistrKeySecretName
 
 # Specify Kong admin API service and listener configuration
-# Note: It is recommended to not use the Admin API to configure Kong
-# when using Kong as an Ingress Controller.
 admin:
   # Enable creating a Kubernetes service for the admin API
   # Disabling this is recommended for most ingress controller configurations
@@ -111,7 +103,7 @@ admin:
     # nodePort: 32443
     # Additional listen parameters, e.g. "reuseport", "backlog=16384"
     parameters:
-      - http2
+    - http2
 
   # Kong admin ingress settings. Useful if you want to expose the Admin
   # API of Kong outside the k8s cluster.
@@ -200,7 +192,7 @@ proxy:
     # nodePort: 32443
     # Additional listen parameters, e.g. "reuseport", "backlog=16384"
     parameters:
-      - http2
+    - http2
 
   # Define stream (TCP) listen
   # To enable, remove "{}", uncomment the section below, and select your desired
@@ -313,7 +305,8 @@ ingressController:
   enabled: true
   image:
     repository: giantswarm/kong-ingress-controller
-    tag: 0.9.1
+    tag: 0.10.0
+  args: []
 
   # Specify Kong Ingress Controller configuration via environment variables
   env:
@@ -546,6 +539,7 @@ podSecurityPolicy:
     # If you use Kong Enterprise <1.5, this must be set to false.
     readOnlyRootFilesystem: true
 
+
 priorityClassName: ""
 
 # securityContext for Kong pods.
@@ -640,7 +634,7 @@ manager:
     # nodePort: 32443
     # Additional listen parameters, e.g. "reuseport", "backlog=16384"
     parameters:
-      - http2
+    - http2
 
   ingress:
     # Enable/disable exposure using ingress.
@@ -684,7 +678,7 @@ portal:
     # nodePort: 32443
     # Additional listen parameters, e.g. "reuseport", "backlog=16384"
     parameters:
-      - http2
+    - http2
 
   ingress:
     # Enable/disable exposure using ingress.
@@ -728,7 +722,7 @@ portalapi:
     # nodePort: 32443
     # Additional listen parameters, e.g. "reuseport", "backlog=16384"
     parameters:
-      - http2
+    - http2
 
   ingress:
     # Enable/disable exposure using ingress.
