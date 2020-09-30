@@ -1,5 +1,64 @@
 # Changelog
 
+## 1.10.0
+
+### Breaking changes
+
+* Kong Ingress Controller 0.10.0 comes with breaking changes to global `KongPlugin`s and to resources without an ingress class defined. Refer to the [`UPGRADE.md notes for chart 1.10.0`](https://github.com/Kong/charts/blob/main/charts/kong/UPGRADE.md#1100) for details.
+
+### Improvements
+
+* Updated default controller version to 0.10.0.
+
+### Fixed
+
+* Removed the `status` field from the `TCPIngress` CRD.
+  ([#188](https://github.com/Kong/charts/pull/188))
+
+## 1.9.1
+
+### Documentation
+
+* Clarified documentation for [breaking changes in 1.9.0](#190) to indicate
+  that any values.yaml that sets `waitImage.repository` requires changes,
+  including those that set the old default.
+* Updated Enterprise examples to use latest Enterprise image version.
+
+## 1.9.0
+
+### Breaking changes
+
+1.9.0 now uses a bash-based pre-migration database availability check. If you
+set `waitImage.repository` in values.yaml, either to the previous default
+(`busybox`) or to a custom image, you must change it to an image that includes
+a `bash` executable.
+
+Once you have `waitImage.repository` set to an image with bash, [perform an
+initial chart version upgrade with migrations disabled](https://github.com/Kong/charts/blob/main/charts/kong/UPGRADE.md#changes-to-wait-for-postgres-image)
+before re-enabling migrations, updating your Kong image version, and performing
+a second release upgrade.
+
+### Improvements
+
+* Added support for sidecar injection.
+  ([#174](https://github.com/Kong/charts/pull/174))
+* Changed to a bash-based pre-migration database availability check.
+  ([#179](https://github.com/Kong/charts/pull/179))
+* Changed to a bash-based pre-migration database availability check.
+  ([#179](https://github.com/Kong/charts/pull/179))
+* Updated default Kong Enterprise version to 2.1.3.0.
+
+### Fixed
+
+* Added missing cluster telemetry service and fixed missing cluster service
+  port.
+  ([#185](https://github.com/Kong/charts/pull/185))
+
+### Documentation
+
+* Added an example Enterprise controller-managed DB-less values.yaml.
+  ([#175](https://github.com/Kong/charts/pull/175))
+
 ## 1.8.0
 
 **Kong Enterprise users:** please review documentation for the [Kong Enterprise
@@ -14,7 +73,7 @@ hybrid mode.
 
 ### Improvements
 
-* Update default Kong version to 2.1.3
+* Update default Kong version to 2.1.
 * Update Kong Enterprise images to 1.5.0.4 (kong-enterprise-edition) and
   2.0.4.2 (kong-enterprise-k8s).
 * Updated default controller version to 0.9.1.
