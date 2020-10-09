@@ -7,6 +7,19 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Breaking changes
+
+* Kong Ingress Controller 0.10.0 comes with breaking changes to global `KongPlugin`s and to resources without an ingress class defined. Refer to the [`UPGRADE.md notes for chart 1.10.0`](https://github.com/Kong/charts/blob/main/charts/kong/UPGRADE.md#1100) for details.
+
+### Updated
+
+- Update architect-orb to 0.11.0
+- Sync with upstream chart [1.10.0](https://github.com/Kong/charts/tree/kong-1.10.0)
+
+### Changed
+
+- Change upstream default branch in upstream-sync script
+
 ## [0.9.1] - 2020-09-07
 
 ### Changed
