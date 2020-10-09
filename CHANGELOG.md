@@ -63,6 +63,15 @@ From upstream CHANGELOG:
 
 - Fix template helpers issue converting port number for the webhook endpoint.
 
+## [v0.8.2] - 2020-06-02
+
+### Added
+
+- Added dates to CHANELOG entries.
+
+### Info
+- Existing v0.8.2 git tag got updated by mistake in attempt to make next release. This changelog entry was added to avoid any confusion, even though change made in the release is not so much customer relevant.
+
 ## [v0.8.1] - 2020-06-02
 
 - Sync with upstream - [v1.6.1](https://github.com/Kong/charts/blob/master/charts/kong/CHANGELOG.md#161)
