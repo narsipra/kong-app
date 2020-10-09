@@ -3,14 +3,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "kong.fullname" . }}
+  namespace:  {{ .Release.Namespace }}
   labels:
     {{- include "kong.metaLabels" . | nindent 4 }}
     app.kubernetes.io/component: app
-    giantswarm.io/monitoring_basic_sli: "true"
+  {{- if .Values.deploymentAnnotations }}
   annotations:
-    {{- if .Values.deploymentAnnotations }}
-{{ toYaml .Values.deploymentAnnotations | indent 4 }}
-    {{- end }}
+  {{- range $key, $value := .Values.deploymentAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -33,7 +35,9 @@ spec:
         {{- end }}
         {{- end }}
         {{- if .Values.podAnnotations }}
-{{ toYaml .Values.podAnnotations | indent 8 }}
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
         {{- end }}
       labels:
         {{- include "kong.metaLabels" . | nindent 8 }}
@@ -72,7 +76,7 @@ spec:
         {{- if .Values.image.unifiedRepoTag }}
         image: "{{ .Values.image.unifiedRepoTag }}"
         {{- else }}
-        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         {{- end }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
