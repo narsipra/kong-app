@@ -305,7 +305,7 @@ ingressController:
   enabled: true
   image:
     repository: giantswarm/kong-ingress-controller
-    tag: 0.10.0
+    tag: "1.0"
   args: []
 
   # Specify Kong Ingress Controller configuration via environment variables
