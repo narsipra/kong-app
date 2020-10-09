@@ -8,6 +8,7 @@ metadata:
     {{- include "kong.metaLabels" . | nindent 4 }}
     app.kubernetes.io/component: app
     giantswarm.io/monitoring_basic_sli: "true"
+  {{- if .Values.deploymentAnnotations }}
   annotations:
   {{- range $key, $value := .Values.deploymentAnnotations }}
     {{ $key }}: {{ $value | quote }}
