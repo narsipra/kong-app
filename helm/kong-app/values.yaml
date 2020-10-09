@@ -54,7 +54,7 @@ env:
 image:
   registry: quay.io
   repository: giantswarm/kong
-  tag: "2.1.3"
+  tag: "2.1"
   # Kong Enterprise
   # repository: kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition
   # tag: "2.1.3.0-alpine"
