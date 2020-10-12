@@ -9,12 +9,25 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ### Breaking changes
 
-* Kong Ingress Controller 0.10.0 comes with breaking changes to global `KongPlugin`s and to resources without an ingress class defined. Refer to the [`UPGRADE.md notes for chart 1.10.0`](https://github.com/Kong/charts/blob/main/charts/kong/UPGRADE.md#1100) for details.
+* Kong Ingress Controller 1.0 removes support for several deprecated flags and
+  the KongCredential custom resource. Please see the [controller changelog](https://github.com/Kong/kubernetes-ingress-controller/blob/main/CHANGELOG.md#breaking-changes)
+  for details. Note that Helm 3 will not remove the KongCredential CRD by
+  default: you should delete it manually after converting KongCredentials to
+  [credential Secrets](https://github.com/Kong/kubernetes-ingress-controller/blob/next/docs/guides/using-consumer-credential-resource.md#provision-a-consumer).
+  If you manage CRDs using Helm (check to see if your KongCredential CRD has a
+  `app.kubernetes.io/managed-by: Helm` label), perform the credential Secret
+  conversion **before** upgrading to chart 1.11.0 to avoid losing credential
+  configuration.
+* The chart no longer uses the `extensions` API for PodSecurityPolicy, and now
+  uses the modern `policy` API. This breaks compatibility with Kubernetes
+  versions 1.11 and older.
+  ([#195](https://github.com/Kong/charts/pull/195))
 
 ### Updated
 
 - Update architect-orb to 0.11.0
-- Sync with upstream chart [1.10.0](https://github.com/Kong/charts/tree/kong-1.10.0)
+- Sync with upstream chart [1.11.0](https://github.com/Kong/charts/tree/kong-1.11.0)
+- Please check the upstream [CHANGELOG.md](/helm/kong-app/CHANGELOG.md)
 
 ### Changed
 
