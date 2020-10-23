@@ -20,7 +20,9 @@ spec:
   strategy:
 {{ toYaml .Values.updateStrategy | indent 4 }}
   {{- end }}
-
+  {{- if .Values.deployment.kong.minReadySeconds }}
+  minReadySeconds: {{ .Values.deployment.kong.minReadySeconds }}
+  {{- end }}
   template:
     metadata:
       annotations:
