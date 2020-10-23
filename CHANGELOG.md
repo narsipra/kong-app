@@ -10,6 +10,11 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 - Add minReadySeconds to deployment template as optional parameter
 
+### Updated
+
+- architect-orb 0.11.0 -> 0.14.0
+- github workflow
+
 ## [0.9.1] - 2020-09-07
 
 ### Changed
