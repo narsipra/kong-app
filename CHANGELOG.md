@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project's packages adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.9.2] - 2020-10-28
 ### Added
 
 - Add minReadySeconds to deployment template as optional parameter
@@ -223,7 +225,8 @@ From upstream CHANGELOG:
 - Use service of type Load Balancer for the Kong proxy service.
 - Disable using Postgres and use Kubernetes resources for storing state.
 
-[Unreleased]: https://github.com/giantswarm/kong-app/compare/v0.9.1...HEAD
+[Unreleased]: https://github.com/giantswarm/kong-app/compare/v0.9.2...HEAD
+[0.9.2]: https://github.com/giantswarm/kong-app/compare/v0.9.1...v0.9.2
 [0.9.1]: https://github.com/giantswarm/kong-app/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/giantswarm/kong-app/compare/v0.8.3...v0.9.0
 [v0.8.3]: https://github.com/giantswarm/kong-app/compare/v0.8.2..v0.8.3
