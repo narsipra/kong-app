@@ -7,6 +7,11 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Updated
+
+- Update architect-orb to 0.18.1
+- Sync with upstream chart [1.12.0](https://github.com/Kong/charts/tree/kong-1.12.0). Please check the upstream [changelog](https://github.com/Kong/charts/blob/main/charts/kong/CHANGELOG.md#1120).
+
 ## [1.0.0] - 2020-10-13
 
 ### Breaking changes
@@ -43,7 +48,7 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 ## [0.9.0] - 2020-08-25
 
 ### Updated
- 
+
 - Upgraded architect-orb to 0.10.0
 - Add github workflows for release automation
 - Sync with upstream chart [v1.8.0](https://github.com/Kong/charts/tree/kong-1.8.0)
