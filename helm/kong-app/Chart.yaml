@@ -12,4 +12,4 @@ name: kong-app
 sources:
 - https://raw.githubusercontent.com/giantswarm/kong-app/v[[ .Version ]]/README.md
 version: [[ .Version ]]
-appVersion: 2.1
+appVersion: 2.2

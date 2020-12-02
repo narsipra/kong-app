@@ -1,5 +1,19 @@
 #!/usr/bin/env bash
 
+# This script should be used to pull in updates from upstream.
+# Use it as a first step for updating from upstream.
+#
+# General outline:
+#
+# - Create a branch
+# - Execute `./hacks/update-chart.sh`
+# - Look at the commits created by the script.
+#   - First one contains all upstream changes from our last commit with message `[upstream-sync] Version XXX`
+#   - Second one re-applies all changes which happened in the mean time in our repository. Use this as a starting point for reverting changes overwritten by the second commit
+# - `git revert --no-commit HEAD` will revert changes from the second commit.
+# - Unstage everything that you don't want to be reverted
+# - Commit, push & create PR
+
 set -o errexit
 set -o nounset
 set -o pipefail
