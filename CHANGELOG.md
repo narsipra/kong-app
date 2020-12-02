@@ -7,6 +7,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [1.1.0] - 2020-12-02
+
 ### Updated
 
 - Update architect-orb to 0.18.1
@@ -247,7 +249,8 @@ From upstream CHANGELOG:
 - Use service of type Load Balancer for the Kong proxy service.
 - Disable using Postgres and use Kubernetes resources for storing state.
 
-[Unreleased]: https://github.com/giantswarm/kong-app/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/giantswarm/kong-app/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/giantswarm/kong-app/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/giantswarm/kong-app/compare/v0.9.1...v1.0.0
 [0.9.1]: https://github.com/giantswarm/kong-app/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/giantswarm/kong-app/compare/v0.8.3...v0.9.0
