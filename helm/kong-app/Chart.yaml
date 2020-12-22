@@ -11,5 +11,7 @@ maintainers:
 name: kong-app
 sources:
 - https://raw.githubusercontent.com/giantswarm/kong-app/v[[ .Version ]]/README.md
+annotations:
+  application.giantswarm.io/values-schema: https://raw.githubusercontent.com/giantswarm/kong-app/v[[ .Version ]]/helm/kong-app/values.schema.json
 version: [[ .Version ]]
 appVersion: 2.2

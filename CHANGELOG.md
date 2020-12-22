@@ -7,6 +7,9 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Added
+- Added values.schema.json for validation of default values
+
 ## [1.1.0] - 2020-12-02
 
 ### Updated
@@ -35,7 +38,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 ### Updated
 
 - Update architect-orb to 0.11.0
-- Sync with upstream chart [1.11.0](https://github.com/Kong/charts/tree/kong-1.11.0). Please check the upstream [changelog](https://github.com/Kong/charts/blob/main/charts/kong/CHANGELOG.md#1110).
+- Sync with upstream chart [1.11.0](https://github.com/Kong/charts/tree/kong-1.11.0)
+- Please check the upstream [CHANGELOG.md](/helm/kong-app/CHANGELOG.md)
 
 ### Changed
 
@@ -249,8 +253,7 @@ From upstream CHANGELOG:
 - Use service of type Load Balancer for the Kong proxy service.
 - Disable using Postgres and use Kubernetes resources for storing state.
 
-[Unreleased]: https://github.com/giantswarm/kong-app/compare/v1.1.0...HEAD
-[1.1.0]: https://github.com/giantswarm/kong-app/compare/v1.0.0...v1.1.0
+[Unreleased]: https://github.com/giantswarm/kong-app/compare/v1.0.0...HEAD
 [1.0.0]: https://github.com/giantswarm/kong-app/compare/v0.9.1...v1.0.0
 [0.9.1]: https://github.com/giantswarm/kong-app/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/giantswarm/kong-app/compare/v0.8.3...v0.9.0
