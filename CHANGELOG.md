@@ -10,14 +10,14 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 ### Added
 - Added values.schema.json for validation of default values
 
-## [1.1.0] - 2020-12-02
+## [v1.1.0] - 2020-12-02
 
 ### Updated
 
 - Update architect-orb to 0.18.1
 - Sync with upstream chart [1.12.0](https://github.com/Kong/charts/tree/kong-1.12.0). Please check the upstream [changelog](https://github.com/Kong/charts/blob/main/charts/kong/CHANGELOG.md#1120).
 
-## [1.0.0] - 2020-10-13
+## [v1.0.0] - 2020-10-13
 
 ### Breaking changes
 
@@ -45,13 +45,24 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 - Change upstream default branch in upstream-sync script
 
-## [0.9.1] - 2020-09-07
+## [v0.9.2] - 2020-10-29
+
+### Added
+
+- Add minReadySeconds to deployment template as optional parameter
+
+### Updated
+
+- architect-orb 0.11.0 -> 0.14.0
+- github workflow
+
+## [v0.9.1] - 2020-09-07
 
 ### Changed
 
 - Split registry value to allow switching registry.
 
-## [0.9.0] - 2020-08-25
+## [v0.9.0] - 2020-08-25
 
 ### Updated
 
@@ -253,10 +264,12 @@ From upstream CHANGELOG:
 - Use service of type Load Balancer for the Kong proxy service.
 - Disable using Postgres and use Kubernetes resources for storing state.
 
-[Unreleased]: https://github.com/giantswarm/kong-app/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/giantswarm/kong-app/compare/v0.9.1...v1.0.0
-[0.9.1]: https://github.com/giantswarm/kong-app/compare/v0.9.0...v0.9.1
-[0.9.0]: https://github.com/giantswarm/kong-app/compare/v0.8.3...v0.9.0
+[Unreleased]: https://github.com/giantswarm/kong-app/compare/v1.1.0...HEAD
+[v1.1.0]: https://github.com/giantswarm/kong-app/compare/v1.0.0...v1.1.0
+[v1.0.0]: https://github.com/giantswarm/kong-app/compare/v0.9.2...v1.0.0
+[v0.9.2]: https://github.com/giantswarm/kong-app/compare/v0.9.1...v0.9.2
+[v0.9.1]: https://github.com/giantswarm/kong-app/compare/v0.9.0...v0.9.1
+[v0.9.0]: https://github.com/giantswarm/kong-app/compare/v0.8.3...v0.9.0
 [v0.8.3]: https://github.com/giantswarm/kong-app/compare/v0.8.2..v0.8.3
 [v0.8.2]: https://github.com/giantswarm/kong-app/compare/v0.8.1..v0.8.2
 [v0.8.1]: https://github.com/giantswarm/kong-app/compare/v0.8.0..v0.8.1
